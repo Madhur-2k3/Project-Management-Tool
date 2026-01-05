@@ -1,14 +1,48 @@
 <template>
     <div class="header">
-        <h1 class="heading">Projects Overview</h1>
-        <p>Manage and track your projects effectively</p>
+        <div class="left">
+             <h1 class="heading">Projects Overview</h1>
+            <p>Manage and track your projects effectively</p>
+        </div>
+        <div class="right">
+            <lightning-button label="+ New Project" variant="brand" onclick={handleCreateProject}></lightning-button>
+        </div>
+        <template if:true={showModal}>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01" class="slds-modal slds-fade-in-open modal">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium">New Project</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <lightning-record-form
+                        object-api-name="Project__c"
+                        layout-type="Full"
+                        mode="edit"
+                        onsuccess={handleSuccess}
+                        onsubmit={handleSubmit}      
+                    ></lightning-record-form>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button variant="neutral" label="Cancel" onclick={handleCancel}></lightning-button>
+                    <!-- <lightning-button variant="brand" label="Save" onclick={handleSave}></lightning-button> -->
+                </footer>
+            </div>
+        </section>
+    </template>
+       
+    </div>
+    <div class="search-n-filter">
+        <div class="search">
+            <lightning-input type="search" label="Search" placeholder="Search by project name" onchange={handleSearchChange}></lightning-input>
+            
+        </div>
     </div>
 
     <div class="projects-container">
-        <template for:each={projectdata} for:item="project">
+        <template for:each={filteredProjects} for:item="project">
             <div key={project.Id} class="project-card">
                 <div class="project-card-header">
-                    <h2 class="project-card-title">{project.Name}</h2>
+                    <h2 class="project-card-title">{project.Project_Name__c}</h2>
                     <p class="project-card-subtitle">{project.Description__c}</p>
                 </div>
                 <div class="project-card-body">
