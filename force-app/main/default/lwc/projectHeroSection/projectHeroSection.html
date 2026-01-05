@@ -1,0 +1,35 @@
+<template>
+    <div class="header">
+        <h1 class="heading">Projects Overview</h1>
+        <p>Manage and track your projects effectively</p>
+    </div>
+
+    <div class="projects-container">
+        <template for:each={projectdata} for:item="project">
+            <div key={project.Id} class="project-card">
+                <div class="project-card-header">
+                    <h2 class="project-card-title">{project.Name}</h2>
+                    <p class="project-card-subtitle">{project.Description__c}</p>
+                </div>
+                <div class="project-card-body">
+                    <p class="project-card-subtitle">{project.Status__c}</p>
+                    <P class="project-card-subtitle">{project.Milestone__c}</P>
+                </div>
+            </div>
+        </template>
+        <div class="project-card">
+            <div class="project-card-header">
+                <h2 class="project-card-title">Project 1</h2>
+                <p class="project-card-subtitle">Project Description</p>
+            </div>
+            <div class="project-card-body">
+                <p class="project-card-subtitle">PLANNING</p>
+                <P class="project-card-subtitle">HIGH PRIORITY</P>
+            </div>
+        </div>
+            
+    </div>
+
+
+
+</template>

@@ -1,0 +1,58 @@
+<template>
+    <h1>Hello World!</h1>
+    <div class="wrapper">
+        <div class="header">
+            <h1 class="heading">Welcome back, Madhur</h1>
+        </div>
+        <div class="stats-cards">
+            <div class="card">
+                <div class="left">
+                    <p class="card-title">Total Projects</p>
+                    <p class="card-value">{totalProjects}</p>
+                    <p class="card-btm">projects in MAD-org</p>
+                </div>
+                <div class="right">
+                    <lightning-icon icon-name="standard:task" size="large"></lightning-icon>
+                </div>
+                
+            </div>
+            <div class="card">
+                <div class="left">
+                    <p class="card-title">Completed Projects</p>
+                    <p class="card-value">{completedProjects}</p>
+                    <p class="card-btm">of 1 total</p>
+                </div>
+                <div class="right">
+                    <lightning-icon icon-name="standard:task" size="large"></lightning-icon>
+                </div>
+                
+            </div>
+            <div class="card">
+                <div class="left">
+                    <p class="card-title">My Tasks</p>
+                    <p class="card-value">{myTasks}</p>
+                    <p class="card-btm">assigned to me</p>
+                </div>
+                <div class="right">
+                    <lightning-icon icon-name="standard:task" size="large"></lightning-icon>
+                </div>
+                
+            </div>
+            <div class="card">
+                <div class="left">
+                    <p class="card-title">Overdue</p>
+                    <p class="card-value">{overdue}</p>
+                    <p class="card-btm">need attention</p>
+                </div>
+                <div class="right">
+                    <lightning-icon icon-name="standard:task" size="large"></lightning-icon>
+                </div>
+                
+            </div>
+        </div>
+
+        
+            
+    </div>
+    
+</template>
