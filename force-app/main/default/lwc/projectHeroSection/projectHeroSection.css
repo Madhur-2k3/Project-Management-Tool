@@ -44,15 +44,11 @@
     margin-top: 5px;
 }
 .projects-container{
-    /* display: flex;
-    gap: 1rem;
-    justify-content: space-between;
-    margin-top: 1rem;
-    flex-wrap: wrap; */
     margin-top: 2rem;
     display: grid;
     grid-template-columns: repeat(4, minmax(250px, 1fr));
     gap: 1rem;
+    margin-bottom: 2rem;
 }
 .status{
     /* background-color: #6a7282;
@@ -63,4 +59,21 @@
 }
 .modal{
     backdrop-filter: blur(4px);
+}
+.project-card-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.search-n-filter{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+.search{
+    flex-grow: 1;
+}
+.filter{
+    width: 10%;
 }
