@@ -1,6 +1,7 @@
 import { LightningElement ,track} from 'lwc';
 import getTotalProjects from '@salesforce/apex/ProjectDataHander.getTotalProjects';
 import getAllProjects from '@salesforce/apex/ProjectDataHander.getAllProjects';
+import getUserDetails from '@salesforce/apex/ProjectDataHander.getUserDetails';
 
 export default class ProjDashboard extends LightningElement {
     @track totalProjects;
@@ -8,11 +9,23 @@ export default class ProjDashboard extends LightningElement {
     @track myTasks=0;
     @track overdue=0;
     @track allProjects=[];
+    userDetails;
+    username;
 
     connectedCallback() {
         this.fetchTotalProjects();
         this.fetchAllProjects();
+        this.fetchUserDetails();
 
+    }
+    async fetchUserDetails() {
+        try {
+            this.userDetails = await getUserDetails();
+            console.log('User Details: ', JSON.stringify(this.userDetails));
+            this.username = this.userDetails.Name;
+        } catch (error) {
+            console.error('Error fetching user details: ', error);
+        }
     }
 
     fetchTotalProjects() {

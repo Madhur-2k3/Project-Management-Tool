@@ -1,0 +1,83 @@
+<template>
+    <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01"
+        class="slds-modal slds-fade-in-open modal">
+        <div class="slds-modal__container">
+            <header class="slds-modal__header">
+                <h2 id="modal-heading-02" class="slds-text-heading_medium">Project Name</h2>
+            </header>
+            <div class="slds-modal__content slds-p-around_medium">
+                <div class="header">
+                    <div class="stats-cards">
+                        <div class="card">
+                            <div class="left">
+                                <p class="card-title">Total Taskss</p>
+                                <p class="card-value">{totalTasks}</p>
+                            </div>
+                            <div class="right">
+                                <lightning-icon icon-name="standard:task" size="large"></lightning-icon>
+                            </div>
+
+                        </div>
+                        <div class="card">
+                            <div class="left">
+                                <p class="card-title">Completed Tasks</p>
+                                <p class="card-value">{completedTasks}</p>
+                                <p class="card-btm">of {totalTasks} total</p>
+                            </div>
+                            <div class="right">
+                                <lightning-icon icon-name="standard:task" size="large"></lightning-icon>
+                            </div>
+
+                        </div>
+                        <div class="card">
+                            <div class="left">
+                                <p class="card-title">In Progress Tasks</p>
+                                <p class="card-value">{inProgressTasks}</p>
+                            </div>
+                            <div class="right">
+                                <lightning-icon icon-name="standard:task" size="large"></lightning-icon>
+                            </div>
+
+                        </div>
+                        <div class="card">
+                            <div class="left">
+                                <p class="card-title">Overdue</p>
+                                <p class="card-value">{overdue}</p>
+                                <p class="card-btm">need attention</p>
+                            </div>
+                            <div class="right">
+                                <lightning-icon icon-name="standard:task" size="large"></lightning-icon>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-section">
+                    <div class="search-n-filter">
+                        <div class="search">
+                            <lightning-input type="search" label="Search" placeholder="Search by Task name"
+                                onchange={handleSearchChange}></lightning-input>
+
+                        </div>
+                        <div class="filter">
+                            <lightning-combobox name="status-filter" value={selectedStatus} label="Status"
+                                options={statusOptions} onchange={handleStatusChange}></lightning-combobox>
+                        </div>
+                        <div class="filter">
+                            <lightning-combobox name="priority-filter" value={selectedPriority} label="Priority"
+                                options={priorityOptions} onchange={handlePriorityChange}></lightning-combobox>
+                        </div>
+                    </div>
+                    <lightning-datatable key-field="Id" data={taskData} columns={taskColumns}
+                        hide-checkbox-column="true"></lightning-datatable>
+                </div>
+            </div>
+            <footer class="slds-modal__footer">
+                <lightning-button variant="neutral" label="Cancel" onclick={handleCancel}></lightning-button>
+                <!-- <lightning-button variant="brand" label="Save" onclick={handleSave}></lightning-button> -->
+            </footer>
+
+        </div>
+
+    </section>
+</template>

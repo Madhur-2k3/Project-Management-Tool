@@ -1,11 +1,11 @@
 import { LightningElement,api,track } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
+import { NavigationMixin } from 'lightning/navigation';
 
 
 
-export default class ProjectHeroSection extends LightningElement {
+export default class ProjectHeroSection extends NavigationMixin(LightningElement) {
     // @api projectdata;
-    selectedItemValue
     @api 
     set projectdata(value){
     this._projectdata = value;
@@ -25,6 +25,9 @@ export default class ProjectHeroSection extends LightningElement {
     @track showEditModal = false;
     @track selectedStatus = 'All';
     @track selectedMilestone = 'All';
+    @track selectedProjectId;
+    @track selectedItemValue;
+    @track showProjectDetails = false;
     @track statusOptions = [
         { label: 'All', value: 'All' },
         { label: 'Planned', value: 'Planned' },
@@ -94,6 +97,23 @@ export default class ProjectHeroSection extends LightningElement {
         } else {
             this.filteredProjects = this.projectdata.filter(project => project.Milestone__c === this.selectedMilestone);
         }
+    }
+    handleProjectClick(event){
+        this.selectedProjectId = event.currentTarget.dataset.id;
+        console.log('Project Clicked: ', this.selectedProjectId);
+        if(!this.selectedProjectId) return;
+        else{
+            this.showProjectDetails = true;
+        }
+        // this[NavigationMixin.Navigate]({
+        //     type: 'standard__recordPage',
+        //     attributes: {
+        //         recordId: projectId,
+        //         objectApiName: 'Project__c',
+        //         actionName: 'view'
+        //     }
+        // });
+        // Navigate to project detail page or perform other actions
     }
 
 }

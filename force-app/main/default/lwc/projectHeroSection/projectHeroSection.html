@@ -46,7 +46,7 @@
 
     <div class="projects-container">
         <template for:each={filteredProjects} for:item="project">
-            <div key={project.Id} class="project-card">
+            <div key={project.Id} data-id={project.Id} class="project-card" onclick={handleProjectClick}>
                 <div class="project-card-header">
                     <div class="left">
                         <h2 class="project-card-title">{project.Project_Name__c}</h2>
@@ -97,6 +97,9 @@
                 </footer>
             </div>
         </section>
+        </template>
+        <template if:true={showProjectDetails}>
+            <c-project-details project-id={selectedProjectId} oncloseprojectdetails={handleCloseProjectDetails}></c-project-details>
         </template>
             
     </div>
