@@ -1,15 +1,33 @@
-import { LightningElement,api,track } from 'lwc';
+import { LightningElement,api,track ,wire} from 'lwc';
 import getTasksByProjectId from '@salesforce/apex/ProjectDataHander.getTasksByProjectId';
-
+import getTeamMembersByProjectId from '@salesforce/apex/ProjectDataHander.getTeamMembersByProjectId';
+import getAllEmployeesExcludingProjectMembers from '@salesforce/apex/ProjectDataHander.getAllEmployeesExcludingProjectMembers';
+import { CurrentPageReference } from 'lightning/navigation';
 
 export default class ProjectDetails extends LightningElement {
-    @api projectId;
+    projectId;
+    projectName
     @track totalTasks=0;
     @track tasks=[];
     @track completedTasks=0;
     @track inProgressTasks=0;
     @track notStartedTasks=0;
     @track searchKey='';
+    @track teamMembers=[];
+    @track totalTeamMembers=0;
+
+    @wire(CurrentPageReference)
+    getStateParameters(currentPageReference) {
+        if (currentPageReference) {
+            this.projectId = currentPageReference.state.c__projectId;
+            this.projectName = currentPageReference.state.c__projectName;
+            console.log('Project ID in Details Component: ', this.projectId);
+            this.fetchTasks();
+            this.fetchTeamMembers();
+            this.fetchAllEmployeesExcludingProjectMembers();
+        }
+    }
+
     get taskData() {
         return this.tasks;
     }
@@ -23,8 +41,10 @@ export default class ProjectDetails extends LightningElement {
     }
 
     connectedCallback() {
-        console.log('Project ID in Details Component: ', this.projectId);
-        this.fetchTasks();
+        // console.log('Project ID in Details Component: ', this.projectId);
+        // this.fetchTasks();
+        // this.fetchTeamMembers();
+        // this.fetchAllEmployeesExcludingProjectMembers();
     }
     async fetchTasks() {
         try {
@@ -36,6 +56,23 @@ export default class ProjectDetails extends LightningElement {
             this.notStartedTasks = this.tasks.filter(task => task.Status__c === 'Not Started').length;
         } catch (error) {
             console.error('Error fetching tasks for Project ID ', this.projectId, ': ', error);
+        }
+    }
+    async fetchTeamMembers() {
+        try {
+            this.teamMembers = await getTeamMembersByProjectId({ projectId: this.projectId });
+            console.log('Team Members for Project ID ', this.projectId, ': ', JSON.stringify(this.teamMembers));
+            this.totalTeamMembers = this.teamMembers.length;
+        } catch (error) {
+            console.error('Error fetching team members for Project ID ', this.projectId, ': ', error);
+        }
+    }
+    async fetchAllEmployeesExcludingProjectMembers() {
+        try {
+            const employees = await getAllEmployeesExcludingProjectMembers({ projectId: this.projectId });
+            console.log('Employees excluding Project Members for Project ID ', this.projectId, ': ', JSON.stringify(employees));
+        } catch (error) {
+            console.error('Error fetching employees excluding project members for Project ID ', this.projectId, ': ', error);
         }
     }
 

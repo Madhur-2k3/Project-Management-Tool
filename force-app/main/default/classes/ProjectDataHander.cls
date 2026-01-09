@@ -17,4 +17,19 @@ public with sharing class ProjectDataHander {
     public static List<Task__c> getTasksByProjectId(Id projectId) {
         return [SELECT Id,Name,Description__c, Assigned_to__c,Due_Date__c,Priority__c,Status__c,Project__c,Sub_Task__c FROM Task__c WHERE Project__c = :projectId];
     }
+    //get team members by project id
+    @AuraEnabled(cacheable=true)
+    public static List<Project_Member__c> getTeamMembersByProjectId(Id projectId) {
+        return [SELECT Id,Employee__r.Name,Employee__r.Email__c,Employee__r.Role__c  FROM Project_Member__c WHERE Project__c = :projectId];
+    }
+    //get all employees excluding current project members
+    @AuraEnabled(cacheable=true)
+    public static List<Employee__c> getAllEmployeesExcludingProjectMembers(Id projectId) {
+        Set<Id> memberIds = new Set<Id>();
+        for(Project_Member__c pm : [SELECT Employee__c FROM Project_Member__c WHERE Project__c = :projectId]) {
+            memberIds.add(pm.Employee__c);
+        }
+        return [SELECT Id, Name, Email__c, Role__c FROM Employee__c WHERE Id NOT IN :memberIds];
+    }
+
 }

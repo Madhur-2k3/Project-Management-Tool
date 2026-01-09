@@ -42,3 +42,15 @@
 .hero-section{
     margin-top: 2rem;
 }
+.search-n-filter{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+.search{
+    flex-grow: 1;
+}
+.filter{
+    width: 10%;
+}
