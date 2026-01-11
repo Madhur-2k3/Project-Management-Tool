@@ -17,6 +17,8 @@ export default class ProjectDetails extends LightningElement {
     @track totalTeamMembers=0;
     @track availableMembers=[];
     @track showManageMembersModal=false;
+    @track statusWithTasks=[]
+
 
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
@@ -29,6 +31,7 @@ export default class ProjectDetails extends LightningElement {
             this.fetchAllEmployeesExcludingProjectMembers();
         }
     }
+    status=['Not Started','In Progress','Completed'];
 
     // get taskData() {
     //     return this.tasks
@@ -62,6 +65,7 @@ export default class ProjectDetails extends LightningElement {
         try {
             this.tasks = await getTasksByProjectId({ projectId: this.projectId });
             console.log('Tasks for Project ID ', this.projectId, ': ', JSON.stringify(this.tasks));
+            this.groupTasksByStatus();
             this.totalTasks = this.tasks.length;
             this.completedTasks = this.tasks.filter(task => task.Status__c === 'Completed').length;
             this.inProgressTasks = this.tasks.filter(task => task.Status__c === 'In Progress').length;
@@ -95,6 +99,34 @@ export default class ProjectDetails extends LightningElement {
     }
     handleManageMembers(){
         this.showManageMembersModal = true;
+    }
+    groupTasksByStatus() {
+        this.statusWithTasks = this.status.map(status => {
+            return {
+                status: status,
+                tasks: this.tasks.filter(task => task.Status__c === status)
+                        .map(task=>{
+                            return{
+                                ...task,
+                                cardClass: `kanban-card ${this.getBorderClassForStatus(task.Priority__c)}`
+                            }
+                        })
+               
+            };
+        });
+        console.log('Status with Tasks: ', JSON.stringify(this.statusWithTasks));
+    }
+    getBorderClassForStatus(priority) {
+        switch (priority) {
+            case 'High':
+                return 'border-red';
+            case 'Medium':
+                return 'border-orange';
+            case 'Low':
+                return 'border-green';
+            default:
+                return '';
+        }
     }
 
 }

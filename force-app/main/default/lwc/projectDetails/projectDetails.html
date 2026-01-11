@@ -100,8 +100,24 @@
                                 options={priorityOptions} onchange={handlePriorityChange}></lightning-combobox>
                         </div>
                     </div>
-                    <div class="task-container">
-                        
+                    <div class="hero-main">
+                        <div class="kanban-container">
+                            <template for:each={statusWithTasks} for:item="col">
+                                <div key={col.status}
+                                    class="kanban-column"
+                                    data-status={col.status}    
+                                >
+                                <h2 class="column-title">{col.status}</h2>
+                                <template for:each={col.tasks} for:item="task">
+                                    <div key={task.Id} class={task.cardClass}>
+                                        <h3 class="task-title">{task.Name}</h3>
+                                        <p class="task-priority">Priority: {task.Priority__c}</p>
+                                        <p class="task-due-date">Due Date: {task.Due_Date__c}</p>
+                                    </div>
+                                </template>
+                            </div>
+                            </template>
+                        </div>
                     </div>
                     <!-- <lightning-datatable key-field="Id" data={taskData} columns={taskColumns}
                         hide-checkbox-column="true"></lightning-datatable> -->

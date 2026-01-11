@@ -54,3 +54,52 @@
 .filter{
     width: 10%;
 }
+.kanban-container {
+    display: flex;
+    gap: 1rem;
+    justify-content: space-around;
+}
+
+.kanban-column {
+    flex: 1;
+    background: #f4f6f9;
+    padding: 1rem;
+    border-radius: 8px;
+    min-height: 300px;
+}
+
+.column-title {
+    font-weight: bold;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.kanban-card {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    cursor: grab;
+}
+
+.task-title {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #0070d2;
+}
+
+.task-priority, .task-due-date {
+    font-size: 0.8rem;
+    color: #555;
+}
+.border-red{
+    border-top: 4px solid oklch(70.4% 0.191 22.216);
+}
+.border-green{
+    border-top: 4px solid oklch(79.2% 0.209 151.711);
+}
+.border-orange{
+    border-top: 4px solid oklch(75% 0.183 55.934);
+}
