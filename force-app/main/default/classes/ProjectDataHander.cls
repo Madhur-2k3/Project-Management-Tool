@@ -13,7 +13,7 @@ public with sharing class ProjectDataHander {
         return [SELECT Id,Name,Username,Profile.Name,UserRole.Name FROM User WHERE Id = :UserInfo.getUserId()];
     }
     //get tasks by project id
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled
     public static List<Task__c> getTasksByProjectId(Id projectId) {
         return [SELECT Id,Name,Description__c, Assigned_to__c,Due_Date__c,Priority__c,Status__c,Project__c,Sub_Task__c FROM Task__c WHERE Project__c = :projectId];
     }
@@ -30,6 +30,13 @@ public with sharing class ProjectDataHander {
             memberIds.add(pm.Employee__c);
         }
         return [SELECT Id, Name, Email__c, Role__c FROM Employee__c WHERE Id NOT IN :memberIds];
+    }
+    //update task status
+    @AuraEnabled
+    public static void updateTaskStatus(Id taskId, String newStatus) {
+        Task__c taskToUpdate = [SELECT Id, Status__c FROM Task__c WHERE Id = :taskId LIMIT 1];
+        taskToUpdate.Status__c = newStatus;
+        update taskToUpdate;
     }
 
 }

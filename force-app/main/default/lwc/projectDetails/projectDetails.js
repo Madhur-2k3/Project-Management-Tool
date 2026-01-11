@@ -3,6 +3,7 @@ import getTasksByProjectId from '@salesforce/apex/ProjectDataHander.getTasksByPr
 import getTeamMembersByProjectId from '@salesforce/apex/ProjectDataHander.getTeamMembersByProjectId';
 import getAllEmployeesExcludingProjectMembers from '@salesforce/apex/ProjectDataHander.getAllEmployeesExcludingProjectMembers';
 import { CurrentPageReference } from 'lightning/navigation';
+import updateTaskStatus from '@salesforce/apex/ProjectDataHander.updateTaskStatus';
 
 export default class ProjectDetails extends LightningElement {
     projectId;
@@ -18,6 +19,7 @@ export default class ProjectDetails extends LightningElement {
     @track availableMembers=[];
     @track showManageMembersModal=false;
     @track statusWithTasks=[]
+    draggedTaskId;
 
 
     @wire(CurrentPageReference)
@@ -127,6 +129,29 @@ export default class ProjectDetails extends LightningElement {
             default:
                 return '';
         }
+    }
+    handleDragStart(event) {
+        this.draggedTaskId = event.target.dataset.id;   
+        console.log("Event dataset:", JSON.stringify(event.target.dataset));
+        console.log('Dragged Task ID: ', this.draggedTaskId);
+    }
+    handleDragOver(event) {
+        event.preventDefault(); //allow drop
+    }
+    handleDrop(event){
+        event.preventDefault();
+        const newStatus = event.currentTarget.dataset.status
+        console.log("Event dataset:", JSON.stringify(event.currentTarget.dataset));
+        console.log('Dropped Task ID: ', this.draggedTaskId, ' to Status: ', newStatus);
+        updateTaskStatus({ taskId: this.draggedTaskId, newStatus: newStatus })
+        .then(() => {
+            console.log('Task status updated successfully');
+            // Refresh tasks after status update
+            this.fetchTasks();
+        })
+        .catch(error => {
+            console.error('Error updating task status: ', error);
+        });
     }
 
 }

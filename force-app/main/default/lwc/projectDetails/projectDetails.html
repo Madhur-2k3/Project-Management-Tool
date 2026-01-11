@@ -106,10 +106,16 @@
                                 <div key={col.status}
                                     class="kanban-column"
                                     data-status={col.status}    
+                                    ondragover={handleDragOver}
+                                    ondrop={handleDrop}
                                 >
                                 <h2 class="column-title">{col.status}</h2>
                                 <template for:each={col.tasks} for:item="task">
-                                    <div key={task.Id} class={task.cardClass}>
+                                    <div key={task.Id} class={task.cardClass}
+                                        draggable="true"
+                                        data-id={task.Id}
+                                        ondragstart={handleDragStart}
+                                        >
                                         <h3 class="task-title">{task.Name}</h3>
                                         <p class="task-priority">Priority: {task.Priority__c}</p>
                                         <p class="task-due-date">Due Date: {task.Due_Date__c}</p>
