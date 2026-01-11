@@ -15,6 +15,8 @@ export default class ProjectDetails extends LightningElement {
     @track searchKey='';
     @track teamMembers=[];
     @track totalTeamMembers=0;
+    @track availableMembers=[];
+    @track showManageMembersModal=false;
 
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
@@ -28,17 +30,27 @@ export default class ProjectDetails extends LightningElement {
         }
     }
 
-    get taskData() {
-        return this.tasks;
-    }
-    get taskColumns() {
-        return [
-            { label: 'Task Name', fieldName: 'Name' },
-            { label: 'Status', fieldName: 'Status__c' },
-            { label: 'Priority', fieldName: 'Priority__c' },
-            { label: 'Due Date', fieldName: 'Due_Date__c', type: 'date' }
-        ];
-    }
+    // get taskData() {
+    //     return this.tasks
+    // }
+    // get taskColumns() {
+    //     return [
+    //         { label: 'Task Name', fieldName: 'Name' },
+    //         { label: 'Status', fieldName: 'Status__c' },
+    //         { label: 'Priority', fieldName: 'Priority__c' },
+    //         { label: 'Due Date', fieldName: 'Due_Date__c', type: 'date' }
+    //     ];
+    // }
+    teamMemberColumns = [
+        { label: 'Member Name', fieldName: 'memberName' },
+        { label: 'Role', fieldName: 'role' },
+        { label: 'Email', fieldName: 'email', type: 'email' }
+    ];
+    availableMemberColumns = [
+        { label: 'Member Name', fieldName: 'Name' },
+        { label: 'Role', fieldName: 'Role__c' },
+        { label: 'Email', fieldName: 'Email__c', type: 'email' }
+    ];
 
     connectedCallback() {
         // console.log('Project ID in Details Component: ', this.projectId);
@@ -60,7 +72,13 @@ export default class ProjectDetails extends LightningElement {
     }
     async fetchTeamMembers() {
         try {
-            this.teamMembers = await getTeamMembersByProjectId({ projectId: this.projectId });
+            const data = await getTeamMembersByProjectId({ projectId: this.projectId });
+            console.log("Data",JSON.stringify(data))
+            this.teamMembers = data.map(member => ({
+                memberName: member.Employee__r?.Name,
+                role: member.Employee__r?.Role__c,
+                email: member.Employee__r?.Email__c
+            }));
             console.log('Team Members for Project ID ', this.projectId, ': ', JSON.stringify(this.teamMembers));
             this.totalTeamMembers = this.teamMembers.length;
         } catch (error) {
@@ -69,11 +87,14 @@ export default class ProjectDetails extends LightningElement {
     }
     async fetchAllEmployeesExcludingProjectMembers() {
         try {
-            const employees = await getAllEmployeesExcludingProjectMembers({ projectId: this.projectId });
-            console.log('Employees excluding Project Members for Project ID ', this.projectId, ': ', JSON.stringify(employees));
+            this.availableMembers = await getAllEmployeesExcludingProjectMembers({ projectId: this.projectId });
+            console.log('Employees excluding Project Members for Project ID ', this.projectId, ': ', JSON.stringify(this.availableMembers));
         } catch (error) {
             console.error('Error fetching employees excluding project members for Project ID ', this.projectId, ': ', error);
         }
+    }
+    handleManageMembers(){
+        this.showManageMembersModal = true;
     }
 
 }

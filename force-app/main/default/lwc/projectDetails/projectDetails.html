@@ -2,7 +2,7 @@
     <section class=" ">
         <div class="container">
             <header class="header">
-                <h2  class="slds-text-heading_medium">{projectName}</h2>
+                <h2 class="slds-text-heading_medium">{projectName}</h2>
             </header>
             <div class=" slds-p-around_medium">
                 <div class="header">
@@ -50,9 +50,39 @@
                         </div>
                     </div>
                     <div class="btn">
-                        <lightning-button label="Create Task" onclick={handleCreateTask} variant="brand"></lightning-button>
-                        <lightning-button label="Manage Members" onclick={handleManageMembers} variant="brand"></lightning-button>
+                        <lightning-button label="Create Task" onclick={handleCreateTask}
+                            variant="brand"></lightning-button>
+                        <lightning-button label="Manage Members" onclick={handleManageMembers}
+                            variant="brand"></lightning-button>
                     </div>
+                    <template if:true={showManageMembersModal}>
+                        <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01"
+                            class="slds-modal slds-fade-in-open modal">
+                            <div class="slds-modal__container">
+                                <header class="slds-modal__header">
+                                    <h2 id="modal-heading-01" class="slds-text-heading_medium">Manage Members</h2>
+                                </header>
+                                <div class="slds-modal__content slds-p-around_medium">
+                                    <div class="project-members">
+                                        <h2>Project Members</h2>
+                                        <lightning-datatable key-field="Id" data={teamMembers} columns={teamMemberColumns}
+                                        hide-checkbox-column="true"></lightning-datatable>
+                                    </div>
+                                    <div class="available-members">
+                                        <h2>Available Members</h2>
+                                        <lightning-datatable key-field="Id" data={availableMembers} columns={availableMemberColumns}
+                                        hide-checkbox-column="true"></lightning-datatable>
+                                    </div>
+                                    
+                                </div>
+                                <footer class="slds-modal__footer">
+                                    <lightning-button variant="neutral" label="Cancel"
+                                        onclick={handleCancel}></lightning-button>
+                                    <!-- <lightning-button variant="brand" label="Save" onclick={handleSave}></lightning-button> -->
+                                </footer>
+                            </div>
+                        </section>
+                    </template>
                 </div>
                 <div class="hero-section">
                     <div class="search-n-filter">
@@ -70,8 +100,11 @@
                                 options={priorityOptions} onchange={handlePriorityChange}></lightning-combobox>
                         </div>
                     </div>
-                    <lightning-datatable key-field="Id" data={taskData} columns={taskColumns}
-                        hide-checkbox-column="true"></lightning-datatable>
+                    <div class="task-container">
+                        
+                    </div>
+                    <!-- <lightning-datatable key-field="Id" data={taskData} columns={taskColumns}
+                        hide-checkbox-column="true"></lightning-datatable> -->
                 </div>
             </div>
 
