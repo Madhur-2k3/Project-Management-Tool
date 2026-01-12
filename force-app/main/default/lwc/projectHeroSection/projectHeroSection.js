@@ -57,9 +57,11 @@ export default class ProjectHeroSection extends NavigationMixin(LightningElement
     }
     handleSuccess() {
         this.closeModal();  
+        //refresh the project list
+        
     }
     handleCancel() {
-        this.closeModal();
+        this.closeModal();     
     }
     handleSubmit(event) {
         event.preventDefault(); // Prevent default submit

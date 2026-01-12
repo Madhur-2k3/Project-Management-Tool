@@ -5,6 +5,7 @@ import getAllEmployeesExcludingProjectMembers from '@salesforce/apex/ProjectData
 import { CurrentPageReference } from 'lightning/navigation';
 import updateTaskStatus from '@salesforce/apex/ProjectDataHander.updateTaskStatus';
 import addEmployeeToProject from '@salesforce/apex/ProjectDataHander.addEmployeeToProject';
+import removeEmployeeFromProject from '@salesforce/apex/ProjectDataHander.removeEmployeeFromProject';
 
 export default class ProjectDetails extends LightningElement {
     projectId;
@@ -22,6 +23,7 @@ export default class ProjectDetails extends LightningElement {
     @track statusWithTasks=[]
     draggedTaskId;
     selectedRows=[];
+    selectedProjectMemberRows=[];
 
 
     @wire(CurrentPageReference)
@@ -83,6 +85,7 @@ export default class ProjectDetails extends LightningElement {
             const data = await getTeamMembersByProjectId({ projectId: this.projectId });
             console.log("Data",JSON.stringify(data))
             this.teamMembers = data.map(member => ({
+                id: member.Id,
                 memberName: member.Employee__r?.Name,
                 role: member.Employee__r?.Role__c,
                 email: member.Employee__r?.Email__c
@@ -182,6 +185,26 @@ export default class ProjectDetails extends LightningElement {
             })
             .catch(error => {
                 console.error('Error adding employee to project: ', error);
+            });
+        }
+    }
+    handleProjectMemberRowSelection(event){
+        this.selectedProjectMemberRows = event.detail.selectedRows;
+        console.log('Selected Project Member Rows: ', JSON.stringify(this.selectedProjectMemberRows));
+        
+    }
+    handleRemoveSelected(){
+        const selectedProjectMemberIds = this.selectedProjectMemberRows.map(row => row.id);
+        console.log("Selected Project Member Ids to remove:",selectedProjectMemberIds);
+        if(selectedProjectMemberIds.length > 0){
+            removeEmployeeFromProject({projectMemberIds: selectedProjectMemberIds})
+            .then(() => {
+                console.log('Employee(s) removed from project successfully');
+                this.fetchTeamMembers();
+                this.fetchAllEmployeesExcludingProjectMembers();
+            })
+            .catch(error => {
+                console.error('Error removing employee(s) from project: ', error);
             });
         }
     }

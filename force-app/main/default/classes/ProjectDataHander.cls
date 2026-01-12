@@ -53,5 +53,13 @@ public with sharing class ProjectDataHander {
         }
 
     } 
+    //remove Employee from Project
+    @AuraEnabled
+    public static void removeEmployeeFromProject(List<Id> projectMemberIds) {
+        List<Project_Member__c> membersToRemove = [SELECT Id FROM Project_Member__c WHERE Id IN :projectMemberIds];
+        if(!membersToRemove.isEmpty()) {
+            delete membersToRemove;
+        }
+    }
 
 }

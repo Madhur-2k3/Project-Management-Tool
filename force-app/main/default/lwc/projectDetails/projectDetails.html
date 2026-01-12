@@ -70,6 +70,10 @@
                                         columns={teamMemberColumns}
                                         onrowselection={handleProjectMemberRowSelection}
                                         ></lightning-datatable>
+                                        <div class="btn">
+                                            <lightning-button label="Remove Selected" onclick={handleRemoveSelected}
+                                                variant="brand"></lightning-button>
+                                        </div>
                                     </div>
                                     <div class="available-members">
                                         <h2>Available Members</h2>
