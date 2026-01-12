@@ -103,3 +103,9 @@
 .border-orange{
     border-top: 4px solid oklch(75% 0.183 55.934);
 }
+.btn{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+}

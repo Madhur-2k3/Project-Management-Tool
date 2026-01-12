@@ -18,12 +18,12 @@ public with sharing class ProjectDataHander {
         return [SELECT Id,Name,Description__c, Assigned_to__c,Due_Date__c,Priority__c,Status__c,Project__c,Sub_Task__c FROM Task__c WHERE Project__c = :projectId];
     }
     //get team members by project id
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled
     public static List<Project_Member__c> getTeamMembersByProjectId(Id projectId) {
         return [SELECT Id,Employee__r.Name,Employee__r.Email__c,Employee__r.Role__c  FROM Project_Member__c WHERE Project__c = :projectId];
     }
     //get all employees excluding current project members
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled
     public static List<Employee__c> getAllEmployeesExcludingProjectMembers(Id projectId) {
         Set<Id> memberIds = new Set<Id>();
         for(Project_Member__c pm : [SELECT Employee__c FROM Project_Member__c WHERE Project__c = :projectId]) {
@@ -38,5 +38,20 @@ public with sharing class ProjectDataHander {
         taskToUpdate.Status__c = newStatus;
         update taskToUpdate;
     }
+    //add Employee to Project
+    @AuraEnabled
+    public static void addEmployeeToProject(Id projectId, List<Id> employeeIds) {
+        List<Project_Member__c> newMembers = new List<Project_Member__c>();
+        for(Id empId : employeeIds) {
+            Project_Member__c pm = new Project_Member__c();
+            pm.Project__c = projectId;
+            pm.Employee__c = empId;
+            newMembers.add(pm);
+        }
+        if(!newMembers.isEmpty()) {
+            insert newMembers;
+        }
+
+    } 
 
 }

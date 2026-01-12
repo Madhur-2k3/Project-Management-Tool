@@ -50,8 +50,7 @@
                         </div>
                     </div>
                     <div class="btn">
-                        <lightning-button label="Create Task" onclick={handleCreateTask}
-                            variant="brand"></lightning-button>
+                        <c-create-task project-id={projectId} ontaskcreated={handleTaskCreated}></c-create-task>
                         <lightning-button label="Manage Members" onclick={handleManageMembers}
                             variant="brand"></lightning-button>
                     </div>
@@ -65,13 +64,25 @@
                                 <div class="slds-modal__content slds-p-around_medium">
                                     <div class="project-members">
                                         <h2>Project Members</h2>
-                                        <lightning-datatable key-field="Id" data={teamMembers} columns={teamMemberColumns}
-                                        hide-checkbox-column="true"></lightning-datatable>
+                                        <lightning-datatable 
+                                        key-field="Id" 
+                                        data={teamMembers} 
+                                        columns={teamMemberColumns}
+                                        onrowselection={handleProjectMemberRowSelection}
+                                        ></lightning-datatable>
                                     </div>
                                     <div class="available-members">
                                         <h2>Available Members</h2>
-                                        <lightning-datatable key-field="Id" data={availableMembers} columns={availableMemberColumns}
-                                        hide-checkbox-column="true"></lightning-datatable>
+                                        <lightning-datatable 
+                                            key-field="Id" 
+                                            data={availableMembers} 
+                                            columns={availableMemberColumns}
+                                            onrowselection={handleRowSelection}
+                                        ></lightning-datatable>
+                                        <div class="btn">
+                                            <lightning-button label="Add Selected" onclick={handleAddSelected}
+                                                variant="brand"></lightning-button>
+                                        </div>
                                     </div>
                                     
                                 </div>
@@ -125,8 +136,6 @@
                             </template>
                         </div>
                     </div>
-                    <!-- <lightning-datatable key-field="Id" data={taskData} columns={taskColumns}
-                        hide-checkbox-column="true"></lightning-datatable> -->
                 </div>
             </div>
 

@@ -4,6 +4,7 @@ import { wire,track } from 'lwc';
 
 export default class CreateTask extends LightningElement {
     @api recordId;
+    @api projectId;
     @track showModal = false;
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
@@ -21,12 +22,13 @@ export default class CreateTask extends LightningElement {
         console.log('Task creation logic triggered', this.recordId);
         this.showModal = true;
     }
-    // fields=['Description','Priority'];
+    fields=['Name','Description__c','Due_Date__c','Priority__c','Status__c','Assigned_to__c','Sub_Task__c'];
     closeModal() {
         this.showModal = false;
     }
     handleSuccess() {
         this.closeModal();  
+        this.dispatchEvent(new CustomEvent('taskcreated'));
     }
     handleCancel() {
         this.closeModal();
@@ -34,8 +36,10 @@ export default class CreateTask extends LightningElement {
     handleSubmit(event) {
         event.preventDefault(); // Prevent default submit
         const fields = event.detail.fields;
-        fields.Project__c = this.recordId; // Set the WhatId to the current recordId
+        fields.Project__c = this.recordId || this.projectId; // Set the WhatId to the current recordId
         this.template.querySelector('lightning-record-form').submit(fields);
     }
+
+
 
 }

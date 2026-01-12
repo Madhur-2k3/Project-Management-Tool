@@ -4,6 +4,7 @@ import getTeamMembersByProjectId from '@salesforce/apex/ProjectDataHander.getTea
 import getAllEmployeesExcludingProjectMembers from '@salesforce/apex/ProjectDataHander.getAllEmployeesExcludingProjectMembers';
 import { CurrentPageReference } from 'lightning/navigation';
 import updateTaskStatus from '@salesforce/apex/ProjectDataHander.updateTaskStatus';
+import addEmployeeToProject from '@salesforce/apex/ProjectDataHander.addEmployeeToProject';
 
 export default class ProjectDetails extends LightningElement {
     projectId;
@@ -20,6 +21,7 @@ export default class ProjectDetails extends LightningElement {
     @track showManageMembersModal=false;
     @track statusWithTasks=[]
     draggedTaskId;
+    selectedRows=[];
 
 
     @wire(CurrentPageReference)
@@ -153,5 +155,34 @@ export default class ProjectDetails extends LightningElement {
             console.error('Error updating task status: ', error);
         });
     }
-
+    handleTaskCreated(){
+        this.fetchTasks();
+    }   
+    handleManageMembersClose(){
+        this.showManageMembersModal = false;
+    }
+    handleRowSelection(event){
+        this.selectedRows = event.detail.selectedRows;
+        console.log('Selected Rows: ', JSON.stringify(this.selectedRows));
+        
+    }
+    handleAddSelected(){
+        // You can process the selected rows as needed
+        if(this.selectedRows.length > 0){
+            // const selectedEmployeeId = this.selectedRows[0].Id;
+            const selectedEmployeeIds = this.selectedRows.map(row => row.Id);
+            console.log("Selected Emp Ids:",selectedEmployeeIds);
+            
+            console.log('Selected Employee ID: ', JSON.stringify(selectedEmployeeIds));
+            addEmployeeToProject({projectId: this.projectId, employeeIds: selectedEmployeeIds})
+            .then(() => {
+                console.log('Employee added to project successfully');
+                this.fetchTeamMembers();
+                this.fetchAllEmployeesExcludingProjectMembers();
+            })
+            .catch(error => {
+                console.error('Error adding employee to project: ', error);
+            });
+        }
+    }
 }
