@@ -1,5 +1,5 @@
 <template>
-    <section class=" ">
+    <section class="wrapper">
         <div class="container">
             <header class="header">
                 <h2 class="slds-text-heading_medium">{projectName}</h2>
@@ -143,6 +143,18 @@
                 </div>
             </div>
 
+        </div>
+        <div class="right">
+            <div class="project-details">
+                <h2>Project Details</h2>
+                <lightning-record-form 
+                record-id={projectId} 
+                object-api-name="Project__c"
+                fields={projectFields}
+                
+                >
+                </lightning-record-form>
+            </div>
         </div>
 
     </section>

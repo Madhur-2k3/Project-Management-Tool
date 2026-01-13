@@ -61,6 +61,8 @@ export default class ProjectDetails extends LightningElement {
         { label: 'Email', fieldName: 'Email__c', type: 'email' }
     ];
 
+    projectFields = ['Name','Project_Name__c', 'Description__c', 'Start_Date__c', 'End_Date__c', 'Status__c', 'Milestone__c','Project_Manager__c'];
+
     connectedCallback() {
         // console.log('Project ID in Details Component: ', this.projectId);
         // this.fetchTasks();
@@ -207,5 +209,8 @@ export default class ProjectDetails extends LightningElement {
                 console.error('Error removing employee(s) from project: ', error);
             });
         }
+    }
+    handleCancel(){
+        this.showManageMembersModal = false;
     }
 }
