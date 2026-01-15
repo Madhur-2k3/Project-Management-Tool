@@ -6,10 +6,12 @@ import { CurrentPageReference } from 'lightning/navigation';
 import updateTaskStatus from '@salesforce/apex/ProjectDataHander.updateTaskStatus';
 import addEmployeeToProject from '@salesforce/apex/ProjectDataHander.addEmployeeToProject';
 import removeEmployeeFromProject from '@salesforce/apex/ProjectDataHander.removeEmployeeFromProject';
+import getProjectDetailsById from '@salesforce/apex/ProjectDataHander.getProjectDetailsById';
+import { refreshApex } from '@salesforce/apex';
 
 export default class ProjectDetails extends LightningElement {
     projectId;
-    projectName
+    @track projectName;
     @track totalTasks=0;
     @track tasks=[];
     @track completedTasks=0;
@@ -24,32 +26,23 @@ export default class ProjectDetails extends LightningElement {
     draggedTaskId;
     selectedRows=[];
     selectedProjectMemberRows=[];
-
+    showTaskDetailsModal=false;
+    selectedTaskId;
 
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
         if (currentPageReference) {
             this.projectId = currentPageReference.state.c__projectId;
-            this.projectName = currentPageReference.state.c__projectName;
+            // this.projectName = currentPageReference.state.c__projectName;
             console.log('Project ID in Details Component: ', this.projectId);
             this.fetchTasks();
             this.fetchTeamMembers();
             this.fetchAllEmployeesExcludingProjectMembers();
+            this.fetchProjectDetails();
         }
     }
     status=['Not Started','In Progress','Completed'];
 
-    // get taskData() {
-    //     return this.tasks
-    // }
-    // get taskColumns() {
-    //     return [
-    //         { label: 'Task Name', fieldName: 'Name' },
-    //         { label: 'Status', fieldName: 'Status__c' },
-    //         { label: 'Priority', fieldName: 'Priority__c' },
-    //         { label: 'Due Date', fieldName: 'Due_Date__c', type: 'date' }
-    //     ];
-    // }
     teamMemberColumns = [
         { label: 'Member Name', fieldName: 'memberName' },
         { label: 'Role', fieldName: 'role' },
@@ -68,6 +61,16 @@ export default class ProjectDetails extends LightningElement {
         // this.fetchTasks();
         // this.fetchTeamMembers();
         // this.fetchAllEmployeesExcludingProjectMembers();
+    }
+    async fetchProjectDetails(){
+        try {
+            const project = await getProjectDetailsById({ projectId: this.projectId });
+            this.projectName = project.Project_Name__c;
+            console.log('Project Details for Project ID ', this.projectId, ': ', JSON.stringify(project));
+        }
+        catch (error) {
+            console.error('Error fetching project details for Project ID ', this.projectId, ': ', error);
+        }
     }
     async fetchTasks() {
         try {
@@ -212,5 +215,30 @@ export default class ProjectDetails extends LightningElement {
     }
     handleCancel(){
         this.showManageMembersModal = false;
+    }
+    handleProjectDetailsSubmit(){
+        console.log("inside handleProjectDetailsSubmit")
+        this.fetchProjectDetails();
+        // refreshApex(this.fetchProjectDetails);
+        // refreshApex(this.projectName);
+    }
+    handleProjectDetailsSuccess(){
+        console.log("inside handleProjectDetailsSuccess")
+        this.fetchProjectDetails();
+        // refreshApex(this.fetchProjectDetails);
+        // refreshApex(this.projectName);
+    }
+    handleTaskClick(event){
+        this.selectedTaskId = event.currentTarget.dataset.id;
+        console.log('Task Clicked ID: ', this.selectedTaskId);
+        if(this.selectedTaskId){
+            //show task details modal or navigate to task details page
+            this.showTaskDetailsModal=true;
+        }
+            
+    }
+    handleTaskCreated(){
+        this.showTaskDetailsModal=false;
+        this.fetchTasks();
     }
 }

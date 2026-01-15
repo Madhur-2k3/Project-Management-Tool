@@ -53,9 +53,11 @@
                         <p class="project-card-subtitle">{project.Description__c}</p>
                     </div>
                     <div class="right">
-                        <lightning-button-menu alternative-text="Show menu" variant="border-filled" onselect={handleOnselect}>
+                        <lightning-button-menu alternative-text="Show menu" variant="border-filled" onclick={handleMenuClick} onselect={handleOnselect} data-id={project.Id}>
                             <lightning-menu-item value="Edit" label="Edit"></lightning-menu-item>
-                            <lightning-menu-item value="Create Task" label="Create Task"></lightning-menu-item>
+                            <lightning-menu-item value="Create Task" label="Create Task">
+                                <c-create-task project-id={project.Id} ></c-create-task>
+                            </lightning-menu-item>
                         </lightning-button-menu>
                     </div>
                     
@@ -93,10 +95,10 @@
                 </div>
                 <footer class="slds-modal__footer">
                     <lightning-button variant="neutral" label="Cancel" onclick={handleCancel}></lightning-button>
-                    <!-- <lightning-button variant="brand" label="Save" onclick={handleSave}></lightning-button> -->
                 </footer>
             </div>
-        </section>
+            </section>
+            <c-create-task project-id={selectedProjectId} ontaskcreated={handleCloseTaskModal}></c-create-task>
         </template>
         <!-- <template if:true={showProjectDetails}>
             <c-project-details project-id={selectedProjectId} oncloseprojectdetails={handleCloseProjectDetails}></c-project-details>

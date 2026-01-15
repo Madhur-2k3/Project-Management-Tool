@@ -130,6 +130,7 @@
                                         draggable="true"
                                         data-id={task.Id}
                                         ondragstart={handleDragStart}
+                                        onclick={handleTaskClick}
                                         >
                                         <h3 class="task-title">{task.Name}</h3>
                                         <p class="task-priority">Priority: {task.Priority__c}</p>
@@ -139,6 +140,10 @@
                             </div>
                             </template>
                         </div>
+                        <template if:true={showTaskDetailsModal}>
+                            <c-task-details task-id={selectedTaskId} ontaskcreated={handleTaskCreated}></c-task-details>
+                        </template>
+                            
                     </div>
                 </div>
             </div>
@@ -151,7 +156,7 @@
                 record-id={projectId} 
                 object-api-name="Project__c"
                 fields={projectFields}
-                
+                onsuccess={handleProjectDetailsSuccess}
                 >
                 </lightning-record-form>
             </div>

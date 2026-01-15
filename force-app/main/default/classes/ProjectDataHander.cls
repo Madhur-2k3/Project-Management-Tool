@@ -7,6 +7,11 @@ public with sharing class ProjectDataHander {
     public static List<Project__c> getAllProjects() {
         return [SELECT Id,Name,Project_Name__c,Description__c,Start_Date__c,End_Date__c,Status__c,Milestone__c  FROM Project__c];
     }
+    //get project details by id
+    @AuraEnabled(Cacheable=true)
+    public static Project__c getProjectDetailsById(Id projectId) {
+        return [SELECT Id,Name,Project_Name__c,Description__c,Start_Date__c,End_Date__c,Status__c,Milestone__c  FROM Project__c WHERE Id = :projectId LIMIT 1];
+    }
     //get user details
     @AuraEnabled
     public static User getUserDetails() {

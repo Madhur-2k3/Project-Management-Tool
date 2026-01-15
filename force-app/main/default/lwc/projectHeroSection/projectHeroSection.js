@@ -79,8 +79,16 @@ export default class ProjectHeroSection extends NavigationMixin(LightningElement
     handleOnselect(event){
         this.selectedItemValue = event.detail.value;
         console.log('Selected Value: ', this.selectedItemValue);
+        event.stopPropagation();
         if(this.selectedItemValue==='Edit') this.showEditModal = true;
         if(this.selectedItemValue==='Create Task') this.createTaskModal = true;
+    }
+    handleMenuClick(event){
+        event.stopPropagation();
+        this.selectedProjectId = event.currentTarget.dataset.id;
+        console.log('Project Clicked: ', this.selectedProjectId);
+        // event.stopPropagation();
+
     }
     handleStatusChange(event){
         this.selectedStatus = event.detail.value;
@@ -113,7 +121,7 @@ export default class ProjectHeroSection extends NavigationMixin(LightningElement
             },
             state: {
                 c__projectId: this.selectedProjectId,
-                c__projectName: this.projectdata.find(project => project.Id === this.selectedProjectId).Project_Name__c
+                // c__projectName: this.projectdata.find(project => project.Id === this.selectedProjectId).Project_Name__c
             }
             })
 
