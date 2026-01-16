@@ -45,5 +45,8 @@ export default class ProjDashboard extends LightningElement {
         this.completedProjects = this.allProjects.filter(project => project.Status__c === 'Completed').length;
 
     }
+    handleRefreshProjects(){
+        this.fetchAllProjects();
+    }
     
 }

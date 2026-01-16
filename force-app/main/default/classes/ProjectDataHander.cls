@@ -3,7 +3,7 @@ public with sharing class ProjectDataHander {
     public static Integer getTotalProjects() {
         return [SELECT COUNT() FROM Project__c];
     }
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled
     public static List<Project__c> getAllProjects() {
         return [SELECT Id,Name,Project_Name__c,Description__c,Start_Date__c,End_Date__c,Status__c,Milestone__c  FROM Project__c];
     }
@@ -65,6 +65,12 @@ public with sharing class ProjectDataHander {
         if(!membersToRemove.isEmpty()) {
             delete membersToRemove;
         }
+    }
+    //delete project by id
+    @AuraEnabled
+    public static void deleteProjectById(Id projectId) {
+        Project__c projectToDelete = [SELECT Id FROM Project__c WHERE Id = :projectId LIMIT 1];
+        delete projectToDelete;
     }
 
 }

@@ -1,6 +1,8 @@
 import { LightningElement,api,track } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import { NavigationMixin } from 'lightning/navigation';
+import deleteProjectById from '@salesforce/apex/ProjectDataHander.deleteProjectById';
+import { getRecordNotifyChange } from 'lightning/uiRecordApi';
 
 
 
@@ -58,6 +60,8 @@ export default class ProjectHeroSection extends NavigationMixin(LightningElement
     handleSuccess() {
         this.closeModal();  
         //refresh the project list
+        const refreshEvent = new CustomEvent('refreshprojects');
+        this.dispatchEvent(refreshEvent);
         
     }
     handleCancel() {
@@ -67,6 +71,7 @@ export default class ProjectHeroSection extends NavigationMixin(LightningElement
         event.preventDefault(); // Prevent default submit
         const fields = event.detail.fields;
         this.template.querySelector('lightning-record-form').submit(fields);
+
 
     }
     handleSearchChange(event){
@@ -127,6 +132,23 @@ export default class ProjectHeroSection extends NavigationMixin(LightningElement
 
         }
         
+    }
+    async handleDelete(event){
+        this.selectedProjectId = event.currentTarget.dataset.id;
+        console.log("selectedId",this.selectedProjectId);
+        event.stopPropagation();
+        try{
+            const result = await deleteProjectById({projectId : this.selectedProjectId});
+            console.log("result",result);
+            // Refresh the project list after deletion
+            //get all projects again so use dispatch event to parent component
+            getRecordNotifyChange([{recordId: this.selectedProjectId}]);
+            const refreshEvent = new CustomEvent('refreshprojects');
+            this.dispatchEvent(refreshEvent);
+
+        }catch(error){
+            console.error("Error deleting project: ", error);
+        }
     }
 
 }
