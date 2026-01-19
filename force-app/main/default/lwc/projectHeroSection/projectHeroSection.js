@@ -30,6 +30,8 @@ export default class ProjectHeroSection extends NavigationMixin(LightningElement
     @track selectedProjectId;
     @track selectedItemValue;
     @track showProjectDetails = false;
+    @track showDeleteModal = false;
+    @track projectName = '';
     @track statusOptions = [
         { label: 'All', value: 'All' },
         { label: 'Planned', value: 'Planned' },
@@ -133,10 +135,21 @@ export default class ProjectHeroSection extends NavigationMixin(LightningElement
         }
         
     }
-    async handleDelete(event){
+    handleDeleteClick(event){
         this.selectedProjectId = event.currentTarget.dataset.id;
+        this.projectName= this.filteredProjects.find(project => project.Id === this.selectedProjectId).Project_Name__c;
+        
         console.log("selectedId",this.selectedProjectId);
         event.stopPropagation();
+        if(this.selectedProjectId){
+            this.showDeleteModal = true;
+        }
+        
+    }
+    async handleDelete(){
+        // this.selectedProjectId = event.currentTarget.dataset.id;
+        console.log("selectedId",this.selectedProjectId);
+        // event.stopPropagation();
         try{
             const result = await deleteProjectById({projectId : this.selectedProjectId});
             console.log("result",result);
@@ -145,10 +158,14 @@ export default class ProjectHeroSection extends NavigationMixin(LightningElement
             getRecordNotifyChange([{recordId: this.selectedProjectId}]);
             const refreshEvent = new CustomEvent('refreshprojects');
             this.dispatchEvent(refreshEvent);
+            this.showDeleteModal = false;
 
         }catch(error){
             console.error("Error deleting project: ", error);
         }
+    }
+    handleCancelDelete(){
+        this.showDeleteModal = false;
     }
 
 }
