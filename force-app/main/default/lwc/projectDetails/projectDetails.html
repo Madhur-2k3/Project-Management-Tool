@@ -53,6 +53,8 @@
                         <c-create-task project-id={projectId} ontaskcreated={handleTaskCreated}></c-create-task>
                         <lightning-button label="Manage Members" onclick={handleManageMembers}
                             variant="brand"></lightning-button>
+                        <lightning-button label="Download Report" onclick={handleDownloadReport}
+                            variant="brand" icon-name="utility:download"></lightning-button>
                     </div>
                     <template if:true={showManageMembersModal}>
                         <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01"

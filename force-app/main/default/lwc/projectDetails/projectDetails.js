@@ -423,10 +423,8 @@ export default class ProjectDetails extends LightningElement {
         this.fetchProjectDetails();
     }
     
-    // ============================================
-    // SEARCH AND FILTER HANDLERS
-    // ============================================
     
+    // SEARCH AND FILTER HANDLERS
 
     handleSearchChange(event) {
         this.searchKey = event.target.value.toLowerCase();
@@ -488,14 +486,31 @@ export default class ProjectDetails extends LightningElement {
         }));
     }
 
-    /**
-     * Clears all filters and resets to show all tasks
-     */
+    //  Clears all filters and resets to show all tasks
+     
     clearFilters() {
         this.searchKey = '';
         this.selectedPriority = null;
         this.selectedAssignee = null;
         this.groupTasksByStatus();
+    }
+    
+    // ============================================
+    // REPORT GENERATION
+    // ============================================
+    
+    
+    //   Opens the PDF report in a new browser tab
+    //   Uses Visualforce page rendered as PDF
+     
+    handleDownloadReport() {
+        if (this.projectId) {
+            // Construct the Visualforce page URL with project ID parameter
+            const vfPageUrl = `/apex/ProjectReportPDF?projectId=${this.projectId}`;
+            
+            // Open PDF in new tab
+            window.open(vfPageUrl, '_blank');
+        }
     }
     
 }
