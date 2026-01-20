@@ -12,7 +12,7 @@
                                 <p class="card-title">Total Tasks</p>
                                 <p class="card-value">{totalTasks}</p>
                             </div>
-                            <div class="right">
+                            <div class="card-right">
                                 <lightning-icon icon-name="standard:task" size="large"></lightning-icon>
                             </div>
 
@@ -23,7 +23,7 @@
                                 <p class="card-value">{completedTasks}</p>
                                 <p class="card-btm">of {totalTasks} total</p>
                             </div>
-                            <div class="right">
+                            <div class="card-right">
                                 <lightning-icon icon-name="standard:task" size="large"></lightning-icon>
                             </div>
 
@@ -33,7 +33,7 @@
                                 <p class="card-title">In Progress Tasks</p>
                                 <p class="card-value">{inProgressTasks}</p>
                             </div>
-                            <div class="right">
+                            <div class="card-right">
                                 <lightning-icon icon-name="standard:task" size="large"></lightning-icon>
                             </div>
 
@@ -43,7 +43,7 @@
                                 <p class="card-title">Team Members</p>
                                 <p class="card-value">{totalTeamMembers}</p>
                             </div>
-                            <div class="right">
+                            <div class="card-right">
                                 <lightning-icon icon-name="standard:task" size="large"></lightning-icon>
                             </div>
 
@@ -107,12 +107,12 @@
 
                         </div>
                         <div class="filter">
-                            <lightning-combobox name="status-filter" value={selectedStatus} label="Status"
-                                options={statusOptions} onchange={handleStatusChange}></lightning-combobox>
-                        </div>
-                        <div class="filter">
                             <lightning-combobox name="priority-filter" value={selectedPriority} label="Priority"
                                 options={priorityOptions} onchange={handlePriorityChange}></lightning-combobox>
+                        </div>
+                        <div class="filter">
+                            <lightning-combobox name="assignee-filter" value={selectedAssignee} label="Assignee"
+                                options={assigneeOptions} onchange={handleAssigneeChange}></lightning-combobox>
                         </div>
                     </div>
                     <div class="hero-main">

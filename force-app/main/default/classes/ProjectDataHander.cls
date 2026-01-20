@@ -20,7 +20,7 @@ public with sharing class ProjectDataHander {
     //get tasks by project id
     @AuraEnabled
     public static List<Task__c> getTasksByProjectId(Id projectId) {
-        return [SELECT Id,Name,Description__c, Assigned_to__c,Due_Date__c,Priority__c,Status__c,Project__c,Sub_Task__c FROM Task__c WHERE Project__c = :projectId];
+        return [SELECT Id,Name,Description__c, Assigned_to__r.Name,Due_Date__c,Priority__c,Status__c,Project__c,Sub_Task__c FROM Task__c WHERE Project__c = :projectId];
     }
     //get team members by project id
     @AuraEnabled

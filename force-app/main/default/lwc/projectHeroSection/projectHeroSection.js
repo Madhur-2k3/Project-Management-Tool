@@ -120,15 +120,13 @@ export default class ProjectHeroSection extends NavigationMixin(LightningElement
         console.log('Project Clicked: ', this.selectedProjectId);
         if(!this.selectedProjectId) return;
         else{
-            // this.showProjectDetails = true;
             this[NavigationMixin.Navigate]({
             type: 'standard__navItemPage',
             attributes: {
-                        apiName: 'Project_Details'
+                        apiName: 'Project_Details_Page' 
             },
             state: {
                 c__projectId: this.selectedProjectId,
-                // c__projectName: this.projectdata.find(project => project.Id === this.selectedProjectId).Project_Name__c
             }
             })
 
