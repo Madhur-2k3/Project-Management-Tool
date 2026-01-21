@@ -1,7 +1,7 @@
-import { LightningElement,api,track } from 'lwc';
+import { LightningElement, api, track } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import { NavigationMixin } from 'lightning/navigation';
-import deleteProjectById from '@salesforce/apex/ProjectDataHander.deleteProjectById';
+import deleteProjectById from '@salesforce/apex/ProjectHandler.deleteProjectById';
 import { getRecordNotifyChange } from 'lightning/uiRecordApi';
 
 export default class ProjectHeroSection extends NavigationMixin(LightningElement) {

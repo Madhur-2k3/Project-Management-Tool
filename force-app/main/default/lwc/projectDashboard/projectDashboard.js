@@ -1,6 +1,6 @@
-import { LightningElement ,track} from 'lwc';
-import getTotalProjects from '@salesforce/apex/ProjectDataHander.getTotalProjects';
-import getAllProjects from '@salesforce/apex/ProjectDataHander.getAllProjects';
+import { LightningElement, track } from 'lwc';
+import getTotalProjects from '@salesforce/apex/ProjectHandler.getTotalProjects';
+import getAllProjects from '@salesforce/apex/ProjectHandler.getAllProjects';
 
 export default class ProjectDashboard extends LightningElement {
     @track totalProjects;

@@ -1,14 +1,11 @@
-// LWC core imports
-import { LightningElement,api,track ,wire} from 'lwc';
-
-// Apex method imports for data operations
-import getTasksByProjectId from '@salesforce/apex/ProjectDataHander.getTasksByProjectId';
-import getTeamMembersByProjectId from '@salesforce/apex/ProjectDataHander.getTeamMembersByProjectId';
-import getAllEmployeesExcludingProjectMembers from '@salesforce/apex/ProjectDataHander.getAllEmployeesExcludingProjectMembers';
-import updateTaskStatus from '@salesforce/apex/ProjectDataHander.updateTaskStatus';
-import addEmployeeToProject from '@salesforce/apex/ProjectDataHander.addEmployeeToProject';
-import removeEmployeeFromProject from '@salesforce/apex/ProjectDataHander.removeEmployeeFromProject';
-import getProjectDetailsById from '@salesforce/apex/ProjectDataHander.getProjectDetailsById';
+import { LightningElement, api, track, wire } from 'lwc';
+import getProjectDetailsById from '@salesforce/apex/ProjectHandler.getProjectDetailsById';
+import getTasksByProjectId from '@salesforce/apex/TaskHandler.getTasksByProjectId';
+import updateTaskStatus from '@salesforce/apex/TaskHandler.updateTaskStatus';
+import getTeamMembersByProjectId from '@salesforce/apex/TeamMemberHandler.getTeamMembersByProjectId';
+import getAllEmployeesExcludingProjectMembers from '@salesforce/apex/TeamMemberHandler.getAllEmployeesExcludingProjectMembers';
+import addEmployeeToProject from '@salesforce/apex/TeamMemberHandler.addEmployeeToProject';
+import removeEmployeeFromProject from '@salesforce/apex/TeamMemberHandler.removeEmployeeFromProject';
 
 // Navigation imports
 import { CurrentPageReference } from 'lightning/navigation';
