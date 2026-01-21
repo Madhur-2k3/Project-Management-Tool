@@ -24,54 +24,33 @@ import { refreshApex } from '@salesforce/apex';
  */
 export default class ProjectDetails extends LightningElement {
     
-    // ============================================
-    // PROPERTIES - Project & Task Data
-    // ============================================
-    
-    projectId;                              // Current project ID from URL parameter
-    @track projectName;                     // Project name for display
-    @track totalTasks = 0;                  // Total task count
-    @track tasks = [];                      // All tasks for the project
-    @track completedTasks = 0;              // Count of completed tasks
-    @track inProgressTasks = 0;             // Count of in-progress tasks
-    @track notStartedTasks = 0;             // Count of not started tasks
-    @track statusWithTasks = [];            // Tasks grouped by status for Kanban board
-    
-    // ============================================
-    // PROPERTIES - Team Members
-    // ============================================
-    
-    @track teamMembers = [];                // Current project team members
-    @track totalTeamMembers = 0;            // Total team member count
-    @track availableMembers = [];           // Employees available to add to project
-    
-    // ============================================
-    // PROPERTIES - UI State & Selections
-    // ============================================
-    
-    @track showManageMembersModal = false;  // Controls manage members modal visibility
-    showTaskDetailsModal = false;           // Controls task details modal visibility
-    selectedTaskId;                         // Currently selected task ID for details view
-    draggedTaskId;                          // Task ID being dragged in Kanban board
-    selectedRows = [];                      // Selected rows in available members table
-    selectedProjectMemberRows = [];         // Selected rows in project members table
-    
-    // ============================================
-    // PROPERTIES - Filters
-    // ============================================
-    
-    @track searchKey = '';                  // Search text for filtering tasks
-    selectedPriority;                       // Selected priority filter value
-    selectedAssignee;                       // Selected assignee filter value
 
-    // ============================================
-    // WIRE - Get Project ID from URL
-    // ============================================
     
-    /**
-     * Wire adapter to get project ID from URL parameters
-     * Triggers data fetching when page reference is available
-     */
+    projectId;                              
+    @track projectName;                     
+    @track totalTasks = 0;                  
+    @track tasks = [];                      
+    @track completedTasks = 0;              
+    @track inProgressTasks = 0;             
+    @track notStartedTasks = 0;             
+    @track statusWithTasks = [];            
+    
+    
+    @track teamMembers = [];                
+    @track totalTeamMembers = 0;            
+    @track availableMembers = [];           
+    
+    @track showManageMembersModal = false;
+    showTaskDetailsModal = false;
+    selectedTaskId;
+    draggedTaskId;
+    selectedRows = [];
+    selectedProjectMemberRows = [];
+    
+    @track searchKey = '';
+    selectedPriority;
+    selectedAssignee;
+
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
         if (currentPageReference) {
@@ -86,9 +65,6 @@ export default class ProjectDetails extends LightningElement {
         }
     }
     
-    // ============================================
-    // CONSTANTS - Status & Column Definitions
-    // ============================================
     
     // Kanban board status columns
     status = ['Not Started', 'In Progress', 'Completed'];
@@ -117,14 +93,7 @@ export default class ProjectDetails extends LightningElement {
         { label: 'Low', value: 'Low' }
     ];
     
-    // ============================================
-    // GETTERS - Computed Properties
-    // ============================================
-    
-    /**
-     * Generates assignee filter options from team members
-     * @returns {Array} Options array with label (name) and value (employee ID)
-     */
+
     get assigneeOptions() {
         const options = this.teamMembers.map(member => {
             return { label: member.memberName, value: member.employeeId };
@@ -133,21 +102,13 @@ export default class ProjectDetails extends LightningElement {
         return options;
     }
 
-    // ============================================
-    // LIFECYCLE HOOKS
-    // ============================================
-    
     connectedCallback() {
         // Data fetching is handled by wire adapter
     }
     
-    // ============================================
-    // DATA FETCHING METHODS
-    // ============================================
     
-    /**
-     * Fetches project details by ID and updates project name
-     */
+    //   Fetches project details by ID and updates project name
+     
     async fetchProjectDetails() {
         try {
             const project = await getProjectDetailsById({ projectId: this.projectId });
@@ -158,10 +119,10 @@ export default class ProjectDetails extends LightningElement {
         }
     }
     
-    /**
-     * Fetches all tasks for the current project
-     * Updates task counts and groups tasks by status
-     */
+    
+    //   Fetches all tasks for the current project
+    //   Updates task counts and groups tasks by status
+     
     async fetchTasks() {
         try {
             this.tasks = await getTasksByProjectId({ projectId: this.projectId });
@@ -191,8 +152,8 @@ export default class ProjectDetails extends LightningElement {
             
             // Map to flatten employee relationship data
             this.teamMembers = data.map(member => ({
-                id: member.Id,                          // Project Member record ID
-                employeeId: member.Employee__c,         // Employee record ID (for filtering)
+                id: member.Id,       
+                employeeId: member.Employee__c,        
                 memberName: member.Employee__r?.Name,
                 role: member.Employee__r?.Role__c,
                 email: member.Employee__r?.Email__c
@@ -217,15 +178,11 @@ export default class ProjectDetails extends LightningElement {
             console.error('Error fetching employees excluding project members for Project ID ', this.projectId, ': ', error);
         }
     }
+
     
-    // ============================================
-    // KANBAN BOARD - Task Grouping & Display
-    // ============================================
+    // Groups tasks by their status for Kanban board display
+    // Applies priority-based border styling to task cards
     
-    /**
-     * Groups tasks by their status for Kanban board display
-     * Applies priority-based border styling to task cards
-     */
     groupTasksByStatus() {
         this.statusWithTasks = this.status.map(status => {
             return {
@@ -241,11 +198,9 @@ export default class ProjectDetails extends LightningElement {
         console.log('Status with Tasks: ', JSON.stringify(this.statusWithTasks));
     }
     
-    /**
-     * Returns CSS class for task card border based on priority
-     * @param {String} priority - Task priority (High/Medium/Low)
-     * @returns {String} CSS class name for border color
-     */
+    
+    //  Returns CSS class for task card border based on priority
+    
     getBorderClassForStatus(priority) {
         switch (priority) {
             case 'High':
@@ -259,28 +214,24 @@ export default class ProjectDetails extends LightningElement {
         }
     }
     
-    // ============================================
-    // DRAG AND DROP - Task Status Updates
-    // ============================================
-    
-    /**
-     * Handles drag start event - stores the dragged task ID
-     */
+ 
+    // DRAG AND DROP - Task Status Updates  
+   
     handleDragStart(event) {
         this.draggedTaskId = event.target.dataset.id;
         console.log("Event dataset:", JSON.stringify(event.target.dataset));
         console.log('Dragged Task ID: ', this.draggedTaskId);
     }
     
-    /**
-     * Handles drag over event - allows drop by preventing default
-     */
+    // 
+    // Handles drag over event - allows drop by preventing default
+    
     handleDragOver(event) {
         event.preventDefault();
     }
     
-    /**
-     * Handles drop event - updates task status via Apex
+    /*
+      Handles drop event - updates task status via Apex
      */
     handleDrop(event) {
         event.preventDefault();
@@ -299,13 +250,9 @@ export default class ProjectDetails extends LightningElement {
             });
     }
     
-    // ============================================
-    // TASK EVENT HANDLERS
-    // ============================================
     
-    /**
-     * Handles task card click - opens task details modal
-     */
+    // Handles task card click - opens task details modal
+    
     handleTaskClick(event) {
         this.selectedTaskId = event.currentTarget.dataset.id;
         console.log('Task Clicked ID: ', this.selectedTaskId);
@@ -314,43 +261,31 @@ export default class ProjectDetails extends LightningElement {
         }
     }
     
-    /**
-     * Handles task creation/update - refreshes task list
-     */
+    // Handles task creation/update - refreshes task list
+    
     handleTaskCreated() {
         this.showTaskDetailsModal = false;
         this.fetchTasks();
     }
     
-    // ============================================
-    // TEAM MEMBER MANAGEMENT
-    // ============================================
     
-    /**
-     * Opens the manage members modal
-     */
+    // Opens the manage members modal
     handleManageMembers() {
         this.showManageMembersModal = true;
     }
     
-    /**
-     * Closes the manage members modal
-     */
+    // Closes the manage members modal
     handleManageMembersClose() {
         this.showManageMembersModal = false;
     }
     
-    /**
-     * Handles row selection in available members table
-     */
+    // Handles row selection in available members table
     handleRowSelection(event) {
         this.selectedRows = event.detail.selectedRows;
         console.log('Selected Rows: ', JSON.stringify(this.selectedRows));
     }
     
-    /**
-     * Adds selected employees to the project team
-     */
+    // Adds selected employees to the project team
     handleAddSelected() {
         if (this.selectedRows.length > 0) {
             const selectedEmployeeIds = this.selectedRows.map(row => row.Id);
@@ -368,17 +303,13 @@ export default class ProjectDetails extends LightningElement {
         }
     }
     
-    /**
-     * Handles row selection in project members table
-     */
+    // Handles row selection in project members table
     handleProjectMemberRowSelection(event) {
         this.selectedProjectMemberRows = event.detail.selectedRows;
         console.log('Selected Project Member Rows: ', JSON.stringify(this.selectedProjectMemberRows));
     }
     
-    /**
-     * Removes selected members from the project team
-     */
+    // Removes selected members from the project team
     handleRemoveSelected() {
         const selectedProjectMemberIds = this.selectedProjectMemberRows.map(row => row.id);
         console.log("Selected Project Member Ids to remove:", selectedProjectMemberIds);
@@ -396,28 +327,21 @@ export default class ProjectDetails extends LightningElement {
         }
     }
     
-    /**
-     * Closes the manage members modal (cancel button)
-     */
+    
+    // Closes the manage members modal (cancel button)
+    
     handleCancel() {
         this.showManageMembersModal = false;
     }
     
-    // ============================================
-    // PROJECT DETAILS FORM HANDLERS
-    // ============================================
-    
-    /**
-     * Handles project details form submission
-     */
+   
+    // Handles project details form submission
     handleProjectDetailsSubmit() {
         console.log("inside handleProjectDetailsSubmit");
         this.fetchProjectDetails();
     }
     
-    /**
-     * Handles successful project details update
-     */
+    // Handles successful project details update
     handleProjectDetailsSuccess() {
         console.log("inside handleProjectDetailsSuccess");
         this.fetchProjectDetails();
@@ -495,11 +419,7 @@ export default class ProjectDetails extends LightningElement {
         this.groupTasksByStatus();
     }
     
-    // ============================================
     // REPORT GENERATION
-    // ============================================
-    
-    
     //   Opens the PDF report in a new browser tab
     //   Uses Visualforce page rendered as PDF
      
@@ -511,6 +431,14 @@ export default class ProjectDetails extends LightningElement {
             // Open PDF in new tab
             window.open(vfPageUrl, '_blank');
         }
+    }
+
+    // clicking legend item sets that priority filter
+    handleLegendClick(event) {
+        const priority = event.currentTarget.dataset.priority;
+        // toggle off if same priority clicked again
+        this.selectedPriority = this.selectedPriority === priority ? null : priority;
+        this.applyFilters();
     }
     
 }

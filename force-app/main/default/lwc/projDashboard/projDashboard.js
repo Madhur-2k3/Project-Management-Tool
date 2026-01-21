@@ -12,12 +12,14 @@ export default class ProjDashboard extends LightningElement {
     userDetails;
     username;
 
+    //Fetch data on component load
     connectedCallback() {
         this.fetchTotalProjects();
         this.fetchAllProjects();
         this.fetchUserDetails();
 
     }
+    // Fetch user details from Apex
     async fetchUserDetails() {
         try {
             this.userDetails = await getUserDetails();
@@ -28,6 +30,7 @@ export default class ProjDashboard extends LightningElement {
         }
     }
 
+    // Fetch total projects count from Apex
     fetchTotalProjects() {
         getTotalProjects()
             .then(result => {
@@ -38,6 +41,7 @@ export default class ProjDashboard extends LightningElement {
             });
         
     }
+    // Fetch all projects from Apex
     async fetchAllProjects() {
         this.allProjects = await getAllProjects();
         console.log("Hello");
@@ -45,6 +49,7 @@ export default class ProjDashboard extends LightningElement {
         this.completedProjects = this.allProjects.filter(project => project.Status__c === 'Completed').length;
 
     }
+    // Refresh projects data
     handleRefreshProjects(){
         this.fetchAllProjects();
     }

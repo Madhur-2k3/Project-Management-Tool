@@ -50,6 +50,11 @@
                         </div>
                     </div>
                     <div class="btn">
+                        <div class="priority-legend">
+                            <span class="legend-item" data-priority="High" onclick={handleLegendClick}><span class="legend-color high"></span> High</span>
+                            <span class="legend-item" data-priority="Medium" onclick={handleLegendClick}><span class="legend-color medium"></span> Medium</span>
+                            <span class="legend-item" data-priority="Low" onclick={handleLegendClick}><span class="legend-color low"></span> Low</span>
+                        </div>
                         <c-create-task project-id={projectId} ontaskcreated={handleTaskCreated}></c-create-task>
                         <lightning-button label="Manage Members" onclick={handleManageMembers}
                             variant="brand"></lightning-button>

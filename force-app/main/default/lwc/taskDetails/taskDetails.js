@@ -16,6 +16,7 @@ export default class TaskDetails extends LightningElement {
         // this.closeModal();
         this.dispatchEvent(new CustomEvent('taskcreated'));
     }
+    // Handles form submission
     handleSubmit(event) {
         event.preventDefault(); // Prevent default submit
         const fields = event.detail.fields;
