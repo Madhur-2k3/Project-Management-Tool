@@ -1,20 +1,20 @@
 public with sharing class ProjectHandler {
-    
+    // get total number of projects
     @AuraEnabled
     public static Integer getTotalProjects() {
         return [SELECT COUNT() FROM Project__c];
     }
-    
+    // get all projects
     @AuraEnabled
     public static List<Project__c> getAllProjects() {
         return [SELECT Id, Name, Project_Name__c, Description__c, Start_Date__c, End_Date__c, Status__c, Milestone__c FROM Project__c];
     }
-    
-    @AuraEnabled(Cacheable=true)
+    // get project details by id
+    @AuraEnabled
     public static Project__c getProjectDetailsById(Id projectId) {
         return [SELECT Id, Name, Project_Name__c, Description__c, Start_Date__c, End_Date__c, Status__c, Milestone__c FROM Project__c WHERE Id = :projectId LIMIT 1];
     }
-    
+    // delete project by id
     @AuraEnabled
     public static void deleteProjectById(Id projectId) {
         Project__c projectToDelete = [SELECT Id FROM Project__c WHERE Id = :projectId LIMIT 1];

@@ -17,21 +17,17 @@ export default class ProjectHeroSection extends NavigationMixin(LightningElement
     get projectdata(){
         return this._projectdata;
     }
-
-    // modal visibility flags
     @track showModal = false;
     @track createTaskModal = false;
     @track showEditModal = false;
     @track showDeleteModal = false;
     @track showProjectDetails = false;
-    
-    // filter state
+
     @track searchKey = '';
     @track filteredProjects = [];
     @track selectedStatus = 'All';
     @track selectedMilestone = 'All';
-    
-    // selected project for actions
+
     @track selectedProjectId;
     @track selectedItemValue;
     @track projectName = '';
