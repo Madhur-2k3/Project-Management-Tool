@@ -110,17 +110,30 @@
                     <div class="search-n-filter">
                         <div class="search">
                             <lightning-input type="search" label="Search" placeholder="Search by Task name"
+                                value={searchKey}
                                 onchange={handleSearchChange}></lightning-input>
 
                         </div>
                         <div class="filter">
                             <lightning-combobox name="priority-filter" value={selectedPriority} label="Priority"
+                                placeholder="Select Priority"
                                 options={priorityOptions} onchange={handlePriorityChange}></lightning-combobox>
                         </div>
                         <div class="filter">
                             <lightning-combobox name="assignee-filter" value={selectedAssignee} label="Assignee"
+                                placeholder="Select Assignee"
                                 options={assigneeOptions} onchange={handleAssigneeChange}></lightning-combobox>
                         </div>
+                        <template if:true={hasActiveFilters}>
+                            <div class="clear-filter-btn">
+                                <lightning-button 
+                                    label="Clear Filters" 
+                                    variant="neutral" 
+                                    icon-name="utility:clear"
+                                    onclick={clearFilters}>
+                                </lightning-button>
+                            </div>
+                        </template>
                     </div>
                     <div class="hero-main">
                         <div class="kanban-container">

@@ -99,6 +99,11 @@ export default class ProjectDetails extends LightningElement {
         return options;
     }
 
+    // Returns true if any filter is currently active
+    get hasActiveFilters() {
+        return this.searchKey || this.selectedPriority || this.selectedAssignee;
+    }
+
     connectedCallback() {
         // Data fetching is handled by wire adapter
     }
