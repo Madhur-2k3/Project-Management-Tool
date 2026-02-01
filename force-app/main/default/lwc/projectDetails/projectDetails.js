@@ -1,6 +1,7 @@
 import { LightningElement, api, track, wire } from 'lwc';
 import getProjectDetailsById from '@salesforce/apex/ProjectHandler.getProjectDetailsById';
 import getTasksByProjectId from '@salesforce/apex/TaskHandler.getTasksByProjectId';
+import getTaskRecordTypes from '@salesforce/apex/TaskHandler.getTaskRecordTypes';
 import updateTaskStatus from '@salesforce/apex/TaskHandler.updateTaskStatus';
 import getTeamMembersByProjectId from '@salesforce/apex/TeamMemberHandler.getTeamMembersByProjectId';
 import getAllEmployeesExcludingProjectMembers from '@salesforce/apex/TeamMemberHandler.getAllEmployeesExcludingProjectMembers';
@@ -47,6 +48,10 @@ export default class ProjectDetails extends LightningElement {
     @track searchKey = '';
     selectedPriority;
     selectedAssignee;
+    
+    // Epic tabs (Record Types)
+    @track epicTabs = [];
+    @track selectedEpicTab = 'all';  // 'all' or RecordTypeId
 
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
@@ -106,6 +111,49 @@ export default class ProjectDetails extends LightningElement {
 
     connectedCallback() {
         // Data fetching is handled by wire adapter
+        this.fetchTaskRecordTypes();
+    }
+    
+    /**
+     * Fetches all active record types for Task__c (Epics)
+     * Used for epic tab filtering
+     */
+    async fetchTaskRecordTypes() {
+        try {
+            const recordTypes = await getTaskRecordTypes();
+            // Build tabs array with "All Tasks" first, then each record type
+            this.epicTabs = [
+                { id: 'all', name: 'All Tasks', isActive: true, tabClass: 'epic-tab active' }
+            ];
+            recordTypes.forEach(rt => {
+                this.epicTabs.push({
+                    id: rt.Id,
+                    name: rt.Name,
+                    isActive: false,
+                    tabClass: 'epic-tab'
+                });
+            });
+            console.log('Epic Tabs: ', JSON.stringify(this.epicTabs));
+        } catch (error) {
+            console.error('Error fetching task record types: ', error);
+        }
+    }
+    
+    /**
+     * Handles epic tab click - filters tasks by record type
+     */
+    handleEpicTabClick(event) {
+        const selectedTabId = event.currentTarget.dataset.tabId;
+        this.selectedEpicTab = selectedTabId;
+        
+        // Update active state and class on tabs
+        this.epicTabs = this.epicTabs.map(tab => ({
+            ...tab,
+            isActive: tab.id === selectedTabId,
+            tabClass: tab.id === selectedTabId ? 'epic-tab active' : 'epic-tab'
+        }));
+        
+        this.applyFilters();
     }
     
     
@@ -375,6 +423,11 @@ export default class ProjectDetails extends LightningElement {
         let filteredTasks = [...this.tasks];
         console.log("Filtered Tasks", JSON.stringify(filteredTasks));
 
+        // Apply epic/record type filter if not "all"
+        if (this.selectedEpicTab && this.selectedEpicTab !== 'all') {
+            filteredTasks = filteredTasks.filter(task => task.RecordTypeId === this.selectedEpicTab);
+        }
+
         // Apply priority filter if selected
         if (this.selectedPriority) {
             filteredTasks = filteredTasks.filter(task => task.Priority__c === this.selectedPriority);
@@ -418,6 +471,13 @@ export default class ProjectDetails extends LightningElement {
         this.searchKey = '';
         this.selectedPriority = null;
         this.selectedAssignee = null;
+        this.selectedEpicTab = 'all';
+        // Reset epic tabs active state
+        this.epicTabs = this.epicTabs.map(tab => ({
+            ...tab,
+            isActive: tab.id === 'all',
+            tabClass: tab.id === 'all' ? 'epic-tab active' : 'epic-tab'
+        }));
         this.groupTasksByStatus();
     }
     
