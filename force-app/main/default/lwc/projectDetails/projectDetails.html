@@ -107,6 +107,19 @@
                     </template>
                 </div>
                 <div class="hero-section">
+                    <!-- Epic Tabs -->
+                    <div class="epic-tabs">
+                        <template for:each={epicTabs} for:item="tab">
+                            <button 
+                                key={tab.id} 
+                                class={tab.tabClass}
+                                data-tab-id={tab.id}
+                                onclick={handleEpicTabClick}>
+                                {tab.name}
+                            </button>
+                        </template>
+                    </div>
+                    
                     <div class="search-n-filter">
                         <div class="search">
                             <lightning-input type="search" label="Search" placeholder="Search by Task name"
