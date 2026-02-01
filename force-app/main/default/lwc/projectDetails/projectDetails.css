@@ -168,37 +168,3 @@
 .right{
     flex-grow: 1;
 }
-
-/* Epic Tabs */
-.epic-tabs {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-    border-bottom: 2px solid #e5e7eb;
-    padding-bottom: 0;
-}
-
-.epic-tab {
-    padding: 0.75rem 1.25rem;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    font-size: 0.95rem;
-    font-weight: 500;
-    color: #6b7280;
-    border-bottom: 3px solid transparent;
-    margin-bottom: -2px;
-    transition: all 0.2s ease;
-}
-
-.epic-tab:hover {
-    color: #0070d2;
-    background-color: #f8fafc;
-}
-
-.epic-tab.active {
-    color: #0070d2;
-    border-bottom-color: #0070d2;
-    font-weight: 600;
-}

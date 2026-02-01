@@ -2,13 +2,7 @@ public with sharing class TaskHandler {
     // get tasks by project id
     @AuraEnabled
     public static List<Task__c> getTasksByProjectId(Id projectId) {
-        return [SELECT Id, Name, Description__c, Assigned_to__c, Assigned_to__r.Name, Due_Date__c, Priority__c, Status__c, Project__c, Sub_Task__c, RecordType.Name, RecordTypeId FROM Task__c WHERE Project__c = :projectId];
-    }
-    
-    // Get all record types for Task__c (for Epic tabs)
-    @AuraEnabled(cacheable=true)
-    public static List<RecordType> getTaskRecordTypes() {
-        return [SELECT Id, Name, DeveloperName FROM RecordType WHERE SObjectType = 'Task__c' AND IsActive = true];
+        return [SELECT Id, Name, Description__c, Assigned_to__r.Name, Due_Date__c, Priority__c, Status__c, Project__c, Sub_Task__c FROM Task__c WHERE Project__c = :projectId];
     }
     // update task status
     @AuraEnabled
