@@ -1,60 +1,63 @@
 <template>
     <div class="wrapper">
+        <!-- Header Section -->
         <div class="header">
-            <h1 class="heading">Welcome back, {username}</h1>
-        </div>
-        <div class="stats-cards">
-            <div class="card">
-                <div class="left">
-                    <p class="card-title">Total Projects</p>
-                    <p class="card-value">{totalProjects}</p>
-                    <p class="card-btm">projects in MAD-org</p>
-                </div>
-                <div class="right">
-                    <lightning-icon icon-name="standard:folder" size="large"></lightning-icon>
-                </div>
-                
-            </div>
-            <div class="card">
-                <div class="left">
-                    <p class="card-title">Completed Projects</p>
-                    <p class="card-value">{completedProjects}</p>
-                    <p class="card-btm">of {totalProjects} total</p>
-                </div>
-                <div class="right">
-                    <lightning-icon icon-name="standard:approval" size="large"></lightning-icon>
-                </div>
-                
-            </div>
-            <div class="card">
-                <div class="left">
-                    <p class="card-title">My Tasks</p>
-                    <p class="card-value">{myTasks}</p>
-                    <p class="card-btm">assigned to me</p>
-                </div>
-                <div class="right">
-                    <lightning-icon icon-name="standard:task" size="large"></lightning-icon>
-                </div>
-                
-            </div>
-            <div class="card">
-                <div class="left">
-                    <p class="card-title">Overdue</p>
-                    <p class="card-value">{overdue}</p>
-                    <p class="card-btm">need attention</p>
-                </div>
-                <div class="right">
-                    <lightning-icon icon-name="standard:date_time" size="large"></lightning-icon>
-                </div>
-                
+            <div class="header-content">
+                <h1 class="heading">Welcome back, {username} 👋</h1>
+                <p class="subheading">Here's what's happening with your projects today</p>
             </div>
         </div>
 
+        <!-- Stats Cards Section -->
+        <div class="stats-cards">
+            <div class="card card-blue">
+                <div class="card-icon">
+                    <lightning-icon icon-name="standard:folder" size="large"></lightning-icon>
+                </div>
+                <div class="card-content">
+                    <p class="card-value">{totalProjects}</p>
+                    <p class="card-title">Total Projects</p>
+                    <p class="card-btm">in MAD-org</p>
+                </div>
+            </div>
+
+            <div class="card card-green">
+                <div class="card-icon">
+                    <lightning-icon icon-name="standard:approval" size="large"></lightning-icon>
+                </div>
+                <div class="card-content">
+                    <p class="card-value">{completedProjects}</p>
+                    <p class="card-title">Completed</p>
+                    <p class="card-btm">of {totalProjects} total</p>
+                </div>
+            </div>
+
+            <div class="card card-purple">
+                <div class="card-icon">
+                    <lightning-icon icon-name="standard:task" size="large"></lightning-icon>
+                </div>
+                <div class="card-content">
+                    <p class="card-value">{myTasks}</p>
+                    <p class="card-title">My Tasks</p>
+                    <p class="card-btm">assigned to mee</p>
+                </div>
+            </div>
+
+            <div class="card card-red">
+                <div class="card-icon">
+                    <lightning-icon icon-name="standard:date_time" size="large"></lightning-icon>
+                </div>
+                <div class="card-content">
+                    <p class="card-value">{overdue}</p>
+                    <p class="card-title">Overdue</p>
+                    <p class="card-btm">need attention</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Projects Section -->
         <div class="hero">
             <c-project-hero-section projectdata={allProjects} onrefreshprojects={handleRefreshProjects}></c-project-hero-section>
         </div>
-        
-            
     </div>
-    
 </template>

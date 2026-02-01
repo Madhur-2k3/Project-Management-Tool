@@ -1,31 +1,149 @@
-.card{
+/* ============================================
+   PROJ DASHBOARD - MODERN UI STYLES
+   ============================================ */
+
+/* Wrapper */
+.wrapper {
+    padding: 2rem;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+    min-height: 100vh;
+    font-family: 'Salesforce Sans', Arial, sans-serif;
+}
+
+/* Header Section */
+.header {
+    margin-bottom: 2rem;
+}
+
+.header-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.heading {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0;
+}
+
+.subheading {
+    font-size: 1rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+/* Stats Cards Grid */
+.stats-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Card Base Styles */
+.card {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    border: 1px solid #d8d8d8;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    background-color: #ffffff;
-    /* width: 20%; */
+    gap: 1.25rem;
+    padding: 1.5rem;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-left: 5px solid transparent;
 }
-.heading{
-    font-size:1.5rem;
-    font-weight:600;
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
-.card-title{
-    font-size:0.85rem;
+
+/* Card Color Variants */
+.card-blue {
+    border-left-color: #3b82f6;
 }
-.card-value{
-    font-size:1.875rem;
-    font-weight:700;
+
+.card-green {
+    border-left-color: #10b981;
 }
-.stats-cards{
-    /* display: flex;
-    gap: 1rem;
-    justify-content: space-between;
-    margin-top: 1rem; */
-    display: grid;
-    grid-template-columns: repeat(4, minmax(250px, 1fr));
-    gap: 1rem;
+
+.card-purple {
+    border-left-color: #8b5cf6;
+}
+
+.card-red {
+    border-left-color: #ef4444;
+}
+
+/* Card Icon */
+.card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    background: #f3f4f6;
+    flex-shrink: 0;
+}
+
+/* Card Content */
+.card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.card-value {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    line-height: 1;
+    margin: 0;
+}
+
+.card-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #374151;
+    margin: 0;
+}
+
+.card-btm {
+    font-size: 0.8rem;
+    color: #9ca3af;
+    margin: 0;
+}
+
+/* Hero Section */
+.hero {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .wrapper {
+        padding: 1rem;
+    }
+    
+    .heading {
+        font-size: 1.5rem;
+    }
+    
+    .stats-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .card {
+        padding: 1.25rem;
+    }
+    
+    .card-value {
+        font-size: 1.75rem;
+    }
 }
