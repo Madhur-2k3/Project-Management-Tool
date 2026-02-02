@@ -3,6 +3,7 @@ import getProjectDetailsById from '@salesforce/apex/ProjectHandler.getProjectDet
 import getTasksByProjectId from '@salesforce/apex/TaskHandler.getTasksByProjectId';
 import getTaskRecordTypes from '@salesforce/apex/TaskHandler.getTaskRecordTypes';
 import updateTaskStatus from '@salesforce/apex/TaskHandler.updateTaskStatus';
+import deleteTask from '@salesforce/apex/TaskHandler.deleteTask';
 import getTeamMembersByProjectId from '@salesforce/apex/TeamMemberHandler.getTeamMembersByProjectId';
 import getAllEmployeesExcludingProjectMembers from '@salesforce/apex/TeamMemberHandler.getAllEmployeesExcludingProjectMembers';
 import addEmployeeToProject from '@salesforce/apex/TeamMemberHandler.addEmployeeToProject';
@@ -40,6 +41,9 @@ export default class ProjectDetails extends LightningElement {
     
     @track showManageMembersModal = false;
     showTaskDetailsModal = false;
+    showDeleteConfirmModal = false;
+    showViewTaskModal = false;
+    taskToDeleteId = null;
     selectedTaskId;
     draggedTaskId;
     selectedRows = [];
@@ -87,6 +91,9 @@ export default class ProjectDetails extends LightningElement {
 
     // Fields to display in project details form
     projectFields = ['Name', 'Project_Name__c', 'Description__c', 'Start_Date__c', 'End_Date__c', 'Status__c', 'Milestone__c', 'Project_Manager__c'];
+
+    // Fields to display in view task modal
+    viewTaskFields = ['Name', 'Description__c', 'Due_Date__c', 'Priority__c', 'Status__c', 'Assigned_to__c', 'Sub_Task__c'];
 
     // Priority filter options
     priorityOptions = [
@@ -308,6 +315,75 @@ export default class ProjectDetails extends LightningElement {
         console.log('Task Clicked ID: ', this.selectedTaskId);
         if (this.selectedTaskId) {
             this.showTaskDetailsModal = true;
+        }
+    }
+    
+    /**
+     * Handles view task icon click - opens read-only modal
+     */
+    handleViewTask(event) {
+        event.stopPropagation(); // Prevent card click
+        this.selectedTaskId = event.currentTarget.dataset.id;
+        console.log('View Task ID: ', this.selectedTaskId);
+        if (this.selectedTaskId) {
+            this.showViewTaskModal = true;
+        }
+    }
+    
+    /**
+     * Closes view task modal
+     */
+    handleViewTaskClose() {
+        this.showViewTaskModal = false;
+    }
+    
+    /**
+     * Handles edit task icon click - opens edit modal
+     */
+    handleEditTask(event) {
+        event.stopPropagation(); // Prevent card click
+        this.selectedTaskId = event.currentTarget.dataset.id;
+        console.log('Edit Task ID: ', this.selectedTaskId);
+        if (this.selectedTaskId) {
+            this.showTaskDetailsModal = true;
+        }
+    }
+    
+    /**
+     * Handles delete task icon click - shows confirmation modal
+     */
+    handleDeleteTask(event) {
+        event.stopPropagation(); // Prevent card click
+        this.taskToDeleteId = event.currentTarget.dataset.id;
+        console.log('Delete Task ID: ', this.taskToDeleteId);
+        this.showDeleteConfirmModal = true;
+    }
+    
+    /**
+     * Cancels delete operation
+     */
+    handleDeleteCancel() {
+        this.showDeleteConfirmModal = false;
+        this.taskToDeleteId = null;
+    }
+    
+    /**
+     * Confirms and executes task deletion
+     */
+    handleDeleteConfirm() {
+        if (this.taskToDeleteId) {
+            deleteTask({ taskId: this.taskToDeleteId })
+                .then(() => {
+                    console.log('Task deleted successfully');
+                    this.showDeleteConfirmModal = false;
+                    this.taskToDeleteId = null;
+                    this.fetchTasks(); // Refresh task list
+                })
+                .catch(error => {
+                    console.error('Error deleting task: ', error);
+                    this.showDeleteConfirmModal = false;
+                    this.taskToDeleteId = null;
+                });
         }
     }
     

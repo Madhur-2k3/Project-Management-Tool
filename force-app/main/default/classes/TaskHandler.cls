@@ -17,4 +17,11 @@ public with sharing class TaskHandler {
         taskToUpdate.Status__c = newStatus;
         update taskToUpdate;
     }
+    
+    // delete task
+    @AuraEnabled
+    public static void deleteTask(Id taskId) {
+        Task__c taskToDelete = [SELECT Id FROM Task__c WHERE Id = :taskId LIMIT 1];
+        delete taskToDelete;
+    }
 }

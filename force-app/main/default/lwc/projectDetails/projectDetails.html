@@ -163,9 +163,40 @@
                                         draggable="true"
                                         data-id={task.Id}
                                         ondragstart={handleDragStart}
-                                        onclick={handleTaskClick}
                                         >
-                                        <h3 class="task-title">{task.Name}</h3>
+                                        <div class="task-card-header">
+                                            <h3 class="task-title">{task.Name}</h3>
+                                            <div class="task-actions">
+                                                <lightning-button-icon 
+                                                    icon-name="utility:preview" 
+                                                    alternative-text="View Task"
+                                                    title="View"
+                                                    variant="bare"
+                                                    size="small"
+                                                    data-id={task.Id}
+                                                    onclick={handleViewTask}>
+                                                </lightning-button-icon>
+                                                <lightning-button-icon 
+                                                    icon-name="utility:edit" 
+                                                    alternative-text="Edit Task"
+                                                    title="Edit"
+                                                    variant="bare"
+                                                    size="small"
+                                                    data-id={task.Id}
+                                                    onclick={handleEditTask}>
+                                                </lightning-button-icon>
+                                                <lightning-button-icon 
+                                                    icon-name="utility:delete" 
+                                                    alternative-text="Delete Task"
+                                                    title="Delete"
+                                                    variant="bare"
+                                                    size="small"
+                                                    class="delete-icon"
+                                                    data-id={task.Id}
+                                                    onclick={handleDeleteTask}>
+                                                </lightning-button-icon>
+                                            </div>
+                                        </div>
                                         <p class="task-priority">Priority: {task.Priority__c}</p>
                                         <p class="task-due-date">Due Date: {task.Due_Date__c}</p>
                                     </div>
@@ -175,6 +206,46 @@
                         </div>
                         <template if:true={showTaskDetailsModal}>
                             <c-task-details task-id={selectedTaskId} ontaskcreated={handleTaskCreated}></c-task-details>
+                        </template>
+                        
+                        <!-- Delete Confirmation Modal -->
+                        <template if:true={showDeleteConfirmModal}>
+                            <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="delete-modal-heading" class="slds-modal slds-fade-in-open modal">
+                                <div class="slds-modal__container delete-modal-container">
+                                    <header class="slds-modal__header">
+                                        <h2 id="delete-modal-heading" class="slds-text-heading_medium">Delete Task</h2>
+                                    </header>
+                                    <div class="slds-modal__content slds-p-around_medium">
+                                        <p>Are you sure you want to delete this task? This action cannot be undone.</p>
+                                    </div>
+                                    <footer class="slds-modal__footer">
+                                        <lightning-button variant="neutral" label="Cancel" onclick={handleDeleteCancel}></lightning-button>
+                                        <lightning-button variant="destructive" label="Delete" onclick={handleDeleteConfirm}></lightning-button>
+                                    </footer>
+                                </div>
+                            </section>
+                        </template>
+                        
+                        <!-- View Task Modal (Read-only) -->
+                        <template if:true={showViewTaskModal}>
+                            <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="view-modal-heading" class="slds-modal slds-fade-in-open modal view-modal">
+                                <div class="slds-modal__container">
+                                    <header class="slds-modal__header">
+                                        <h2 id="view-modal-heading" class="slds-text-heading_medium">Task Details</h2>
+                                    </header>
+                                    <div class="slds-modal__content slds-p-around_medium">
+                                        <lightning-record-form
+                                            object-api-name="Task__c"
+                                            mode="readonly"
+                                            record-id={selectedTaskId}
+                                            fields={viewTaskFields}>
+                                        </lightning-record-form>
+                                    </div>
+                                    <footer class="slds-modal__footer">
+                                        <lightning-button variant="neutral" label="Close" onclick={handleViewTaskClose}></lightning-button>
+                                    </footer>
+                                </div>
+                            </section>
                         </template>
                             
                     </div>
