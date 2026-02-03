@@ -1,6 +1,6 @@
 public with sharing class TaskController {
     
-        @AuraEnabled(cacheable=true)
+        @AuraEnabled
         public static List<Task__c> getParentTasks(String projectId, String currentRecordTypeId) {
         // Get the current record type name to exclude tasks of the same type
         String currentRecordTypeName = '';

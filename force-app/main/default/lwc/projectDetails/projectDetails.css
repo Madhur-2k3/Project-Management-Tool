@@ -243,8 +243,9 @@
 
 .slds-modal__container {
     border-radius: 16px !important;
+    width: 40% !important;
     overflow: hidden;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 25px 50px -1 !important;
     animation: modalSlideIn 0.3s ease-out;
 }
 
@@ -355,7 +356,7 @@
 
 /* Epic Card Styling */
 .epic-card {
-    border-left: 4px solid #0070d2 !important;
+    /* border-left: 4px solid #0070d2 !important; */
     cursor: pointer;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
@@ -368,7 +369,7 @@
 .epic-card::before {
     content: "Epic";
     position: absolute;
-    top: 0.5rem;
+    top: 0.25rem;
     right: 0.5rem;
     background: #0070d2;
     color: white;
