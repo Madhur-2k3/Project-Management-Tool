@@ -1,6 +1,7 @@
 import { LightningElement, api, wire, track } from 'lwc';
 import { CurrentPageReference } from 'lightning/navigation';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import TASK_OBJECT from '@salesforce/schema/Task__c';
 import getParentTasks from '@salesforce/apex/TaskController.getParentTasks';
 import getProjectEmployees from '@salesforce/apex/TaskController.getProjectEmployees';
@@ -187,6 +188,7 @@ export default class CreateTask extends LightningElement {
     handleSuccess() {
         this.closeModal();  
         this.dispatchEvent(new CustomEvent('taskcreated'));
+        this.showToast('Success', 'Task created successfully', 'success');
     }
     handleCancel() {
         this.closeModal();
@@ -207,6 +209,13 @@ export default class CreateTask extends LightningElement {
         this.template.querySelector('lightning-record-edit-form').submit(fields);
     }
 
-
+    showToast(title, message, variant) {
+        const event = new ShowToastEvent({
+            title: title,
+            message: message,
+            variant: variant
+        });
+        this.dispatchEvent(event);
+    }
 
 }

@@ -120,6 +120,25 @@
                         </template>
                     </div>
                     
+                    <!-- Active Epic Filter -->
+                    <template if:true={selectedEpicTask}>
+                        <div class="active-epic-filter">
+                            <div class="epic-filter-chip">
+                                <lightning-icon icon-name="standard:task" size="x-small"></lightning-icon>
+                                <span class="epic-filter-name">{selectedEpicTask.Name}</span>
+                                <lightning-button-icon 
+                                    icon-name="utility:close" 
+                                    alternative-text="Remove filter"
+                                    title="Remove Epic filter"
+                                    variant="bare"
+                                    size="small"
+                                    onclick={handleClearEpicFilter}>
+                                </lightning-button-icon>
+                            </div>
+                            <span class="epic-filter-label">Showing subtasks under this Epic</span>
+                        </div>
+                    </template>
+                    
                     <div class="search-n-filter">
                         <div class="search">
                             <lightning-input type="search" label="Search" placeholder="Search by Task name"
@@ -162,7 +181,10 @@
                                     <div key={task.Id} class={task.cardClass}
                                         draggable="true"
                                         data-id={task.Id}
+                                        data-record-type={task.RecordTypeId}
+                                        data-is-epic={task.isEpic}
                                         ondragstart={handleDragStart}
+                                        onclick={handleTaskCardClick}
                                         >
                                         <div class="task-card-header">
                                             <h3 class="task-title">{task.Name}</h3>

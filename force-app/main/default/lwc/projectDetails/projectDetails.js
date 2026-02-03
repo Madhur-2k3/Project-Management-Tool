@@ -1,4 +1,5 @@
 import { LightningElement, api, track, wire } from 'lwc';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getProjectDetailsById from '@salesforce/apex/ProjectHandler.getProjectDetailsById';
 import getTasksByProjectId from '@salesforce/apex/TaskHandler.getTasksByProjectId';
 import getTaskRecordTypes from '@salesforce/apex/TaskHandler.getTaskRecordTypes';
@@ -56,6 +57,10 @@ export default class ProjectDetails extends LightningElement {
     // Epic tabs (Record Types)
     @track epicTabs = [];
     @track selectedEpicTab = 'all';  // 'all' or RecordTypeId
+    
+    // Selected Epic task for filtering subtasks
+    @track selectedEpicTask = null;
+    epicRecordTypeId = null;  // Store Epic record type ID
 
     @wire(CurrentPageReference)
     getStateParameters(currentPageReference) {
@@ -113,7 +118,7 @@ export default class ProjectDetails extends LightningElement {
 
     // Returns true if any filter is currently active
     get hasActiveFilters() {
-        return this.searchKey || this.selectedPriority || this.selectedAssignee;
+        return this.searchKey || this.selectedPriority || this.selectedAssignee || this.selectedEpicTask;
     }
 
     connectedCallback() {
@@ -139,8 +144,13 @@ export default class ProjectDetails extends LightningElement {
                     isActive: false,
                     tabClass: 'epic-tab'
                 });
+                // Store Epic record type ID for later use
+                if (rt.Name === 'Epic' || rt.DeveloperName === 'Epic') {
+                    this.epicRecordTypeId = rt.Id;
+                }
             });
             console.log('Epic Tabs: ', JSON.stringify(this.epicTabs));
+            console.log('Epic Record Type ID: ', this.epicRecordTypeId);
         } catch (error) {
             console.error('Error fetching task record types: ', error);
         }
@@ -248,7 +258,8 @@ export default class ProjectDetails extends LightningElement {
                     .filter(task => task.Status__c === status)
                     .map(task => ({
                         ...task,
-                        cardClass: `kanban-card ${this.getBorderClassForStatus(task.Priority__c)}`
+                        cardClass: `kanban-card ${this.getBorderClassForStatus(task.Priority__c)}${task.RecordTypeId === this.epicRecordTypeId ? ' epic-card' : ''}`,
+                        isEpic: task.RecordTypeId === this.epicRecordTypeId
                     }))
             };
         });
@@ -301,9 +312,11 @@ export default class ProjectDetails extends LightningElement {
             .then(() => {
                 console.log('Task status updated successfully');
                 this.fetchTasks(); // Refresh task list
+                this.showToast('Success', `Task moved to ${newStatus}`, 'success');
             })
             .catch(error => {
                 console.error('Error updating task status: ', error);
+                this.showToast('Error', 'Failed to update task status', 'error');
             });
     }
     
@@ -316,6 +329,35 @@ export default class ProjectDetails extends LightningElement {
         if (this.selectedTaskId) {
             this.showTaskDetailsModal = true;
         }
+    }
+    
+    /**
+     * Handles task card click - if Epic, filters to show subtasks
+     */
+    handleTaskCardClick(event) {
+        const taskId = event.currentTarget.dataset.id;
+        const isEpic = event.currentTarget.dataset.isEpic === 'true';
+        
+        console.log('Task Card Clicked - ID:', taskId, 'isEpic:', isEpic);
+        
+        if (isEpic) {
+            // Find the clicked Epic task
+            const epicTask = this.tasks.find(task => task.Id === taskId);
+            if (epicTask) {
+                this.selectedEpicTask = epicTask;
+                this.applyFilters();
+                this.showToast('Epic Selected', `Showing subtasks under "${epicTask.Name}"`, 'info');
+            }
+        }
+        // Non-epic clicks are handled by the action icons (view/edit/delete)
+    }
+    
+    /**
+     * Clears the Epic filter
+     */
+    handleClearEpicFilter() {
+        this.selectedEpicTask = null;
+        this.applyFilters();
     }
     
     /**
@@ -378,11 +420,13 @@ export default class ProjectDetails extends LightningElement {
                     this.showDeleteConfirmModal = false;
                     this.taskToDeleteId = null;
                     this.fetchTasks(); // Refresh task list
+                    this.showToast('Success', 'Task deleted successfully', 'success');
                 })
                 .catch(error => {
                     console.error('Error deleting task: ', error);
                     this.showDeleteConfirmModal = false;
                     this.taskToDeleteId = null;
+                    this.showToast('Error', 'Failed to delete task', 'error');
                 });
         }
     }
@@ -422,9 +466,11 @@ export default class ProjectDetails extends LightningElement {
                     console.log('Employee added to project successfully');
                     this.fetchTeamMembers();
                     this.fetchAllEmployeesExcludingProjectMembers();
+                    this.showToast('Success', 'Team member(s) added successfully', 'success');
                 })
                 .catch(error => {
                     console.error('Error adding employee to project: ', error);
+                    this.showToast('Error', 'Failed to add team member(s)', 'error');
                 });
         }
     }
@@ -446,9 +492,11 @@ export default class ProjectDetails extends LightningElement {
                     console.log('Employee(s) removed from project successfully');
                     this.fetchTeamMembers();
                     this.fetchAllEmployeesExcludingProjectMembers();
+                    this.showToast('Success', 'Team member(s) removed successfully', 'success');
                 })
                 .catch(error => {
                     console.error('Error removing employee(s) from project: ', error);
+                    this.showToast('Error', 'Failed to remove team member(s)', 'error');
                 });
         }
     }
@@ -499,9 +547,15 @@ export default class ProjectDetails extends LightningElement {
         let filteredTasks = [...this.tasks];
         console.log("Filtered Tasks", JSON.stringify(filteredTasks));
 
-        // Apply epic/record type filter if not "all"
-        if (this.selectedEpicTab && this.selectedEpicTab !== 'all') {
-            filteredTasks = filteredTasks.filter(task => task.RecordTypeId === this.selectedEpicTab);
+        // Apply Epic subtask filter if an Epic is selected
+        if (this.selectedEpicTask) {
+            // Show only tasks that have this Epic as their parent (Sub_Task__c)
+            filteredTasks = filteredTasks.filter(task => task.Sub_Task__c === this.selectedEpicTask.Id);
+        } else {
+            // Apply epic/record type filter if not "all" (only when no specific Epic is selected)
+            if (this.selectedEpicTab && this.selectedEpicTab !== 'all') {
+                filteredTasks = filteredTasks.filter(task => task.RecordTypeId === this.selectedEpicTab);
+            }
         }
 
         // Apply priority filter if selected
@@ -536,7 +590,8 @@ export default class ProjectDetails extends LightningElement {
                 .filter(task => task.Status__c === status)
                 .map(task => ({
                     ...task,
-                    cardClass: `kanban-card ${this.getBorderClassForStatus(task.Priority__c)}`
+                    cardClass: `kanban-card ${this.getBorderClassForStatus(task.Priority__c)}${task.RecordTypeId === this.epicRecordTypeId ? ' epic-card' : ''}`,
+                    isEpic: task.RecordTypeId === this.epicRecordTypeId
                 }))
         }));
     }
@@ -548,6 +603,7 @@ export default class ProjectDetails extends LightningElement {
         this.selectedPriority = null;
         this.selectedAssignee = null;
         this.selectedEpicTab = 'all';
+        this.selectedEpicTask = null;  // Clear Epic filter
         // Reset epic tabs active state
         this.epicTabs = this.epicTabs.map(tab => ({
             ...tab,
@@ -577,6 +633,21 @@ export default class ProjectDetails extends LightningElement {
         // toggle off if same priority clicked again
         this.selectedPriority = this.selectedPriority === priority ? null : priority;
         this.applyFilters();
+    }
+    
+    /**
+     * Shows a toast notification
+     * @param {string} title - Toast title
+     * @param {string} message - Toast message
+     * @param {string} variant - Toast variant (success, error, warning, info)
+     */
+    showToast(title, message, variant) {
+        const event = new ShowToastEvent({
+            title: title,
+            message: message,
+            variant: variant
+        });
+        this.dispatchEvent(event);
     }
     
 }

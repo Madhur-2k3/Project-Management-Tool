@@ -213,7 +213,7 @@
 
 .task-actions {
     display: flex;
-    gap: 0.25rem;
+    gap: 0.5rem;
     opacity: 0;
     transition: opacity 0.2s ease;
 }
@@ -300,4 +300,86 @@
     font-size: 1rem;
     color: #4a5568;
     line-height: 1.6;
+}
+
+/* Active Epic Filter Chip */
+.active-epic-filter {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(135deg, #f0f7ff 0%, #e6f0fa 100%);
+    border-radius: 8px;
+    border: 1px solid #b3d4fc;
+}
+
+.epic-filter-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #0070d2;
+    color: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 20px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 4px rgba(0, 112, 210, 0.3);
+}
+
+.epic-filter-chip lightning-icon {
+    --slds-c-icon-color-foreground: white;
+}
+
+.epic-filter-chip lightning-button-icon {
+    --slds-c-button-icon-color-foreground: white;
+    margin-left: 0.25rem;
+}
+
+.epic-filter-chip lightning-button-icon:hover {
+    --slds-c-button-icon-color-foreground: #ffcccb;
+}
+
+.epic-filter-name {
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.epic-filter-label {
+    color: #4a5568;
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+/* Epic Card Styling */
+.epic-card {
+    border-left: 4px solid #0070d2 !important;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.epic-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 112, 210, 0.2);
+}
+
+.epic-card::before {
+    content: "Epic";
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: #0070d2;
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.kanban-card {
+    position: relative;
 }

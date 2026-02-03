@@ -1,4 +1,5 @@
-import { LightningElement,api } from 'lwc';
+import { LightningElement, api } from 'lwc';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class TaskDetails extends LightningElement {
     @api taskId;
@@ -11,6 +12,7 @@ export default class TaskDetails extends LightningElement {
     handleSuccess() {
         this.closeModal();  
         this.dispatchEvent(new CustomEvent('taskcreated'));
+        this.showToast('Success', 'Task updated successfully', 'success');
     }
     handleCancel() {
         // this.closeModal();
@@ -22,5 +24,14 @@ export default class TaskDetails extends LightningElement {
         const fields = event.detail.fields;
         fields.Project__c = this.recordId || this.projectId; // Set the WhatId to the current recordId
         this.template.querySelector('lightning-record-form').submit(fields);
+    }
+
+    showToast(title, message, variant) {
+        const event = new ShowToastEvent({
+            title: title,
+            message: message,
+            variant: variant
+        });
+        this.dispatchEvent(event);
     }
 }
