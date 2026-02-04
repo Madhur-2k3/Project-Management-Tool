@@ -12,6 +12,9 @@
     background-color: #ffffff;
     /* width: 20%; */
 }
+.wrapper{
+    background-color: white;
+}
 .heading{
     font-size:1.5rem;
     font-weight:600;
