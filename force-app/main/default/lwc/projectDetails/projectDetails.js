@@ -121,9 +121,9 @@ export default class ProjectDetails extends LightningElement {
         return this.searchKey || this.selectedPriority || this.selectedAssignee || this.selectedEpicTask;
     }
 
-    connectedCallback() {
-        // Data fetching is handled by wire adapter
-        this.fetchTaskRecordTypes();
+    async connectedCallback() {
+        // Fetch record types first so epicRecordTypeId is available for task grouping
+        await this.fetchTaskRecordTypes();
     }
     
     /**
@@ -151,6 +151,11 @@ export default class ProjectDetails extends LightningElement {
             });
             console.log('Epic Tabs: ', JSON.stringify(this.epicTabs));
             console.log('Epic Record Type ID: ', this.epicRecordTypeId);
+            
+            // Re-group tasks if they were already loaded to apply Epic labels correctly
+            if (this.tasks && this.tasks.length > 0) {
+                this.groupTasksByStatus();
+            }
         } catch (error) {
             console.error('Error fetching task record types: ', error);
         }
