@@ -102,6 +102,32 @@
     font-size: 0.8rem;
     color: #555;
 }
+.task-assignee {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #f3f6fb;
+    color: #16325c;
+    padding: 0.25rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.task-assignee .assignee-icon {
+    --slds-c-icon-color-foreground: #eaedf0;
+    flex: 0 0 auto;
+}
+.task-assignee .assignee-name {
+    font-weight: 600;
+    color: #0b3d91;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 .border-red{
     border-top: 4px solid oklch(70.4% 0.191 22.216);
 }
