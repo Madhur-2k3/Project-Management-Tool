@@ -2,6 +2,7 @@ import { LightningElement, track } from 'lwc';
 import getDataFromS3 from '@salesforce/apex/s3Controller.getDataFromS3';
 import listObjectsFromS3 from '@salesforce/apex/s3Controller.listObjectsFromS3';
 import putObjectToS3 from '@salesforce/apex/s3Controller.putObjectToS3';
+import getPresignedUrl from '@salesforce/apex/s3Presigner.getPresignedUrl';
 
 export default class S3Tester extends LightningElement {
     @track fileName = 'test.txt';
@@ -62,6 +63,7 @@ export default class S3Tester extends LightningElement {
             }
         } catch (e) {
             this.error = e?.body?.message || e?.message || JSON.stringify(e);
+            console.error('listObjectsFromS3 error', e);
         } finally {
             this.loading = false;
         }
@@ -95,10 +97,32 @@ export default class S3Tester extends LightningElement {
             return;
         }
         this.loading = true;
+        const fileNameToUse = this.selectedFileName || this.fileName || 'upload.bin';
         try {
-            const fileNameToUse = this.selectedFileName || this.fileName || 'upload.bin';
-            const res = await putObjectToS3({ fileName: fileNameToUse, base64Body: this.fileBase64, contentType: this.fileMimeType });
-            this.result = 'Upload succeeded: ' + res;
+            // Request presigned PUT URL from Apex
+            const presignedUrl = await getPresignedUrl({ fileName: fileNameToUse, httpMethod: 'PUT', expiresInSeconds: 3600 });
+            // Convert base64 to blob
+            const byteCharacters = atob(this.fileBase64);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { type: this.fileMimeType });
+
+            // Upload directly to presigned URL
+            const resp = await fetch(presignedUrl, {
+                method: 'PUT',
+                body: blob,
+                headers: { 'Content-Type': this.fileMimeType }
+            });
+            if (resp.ok) {
+                this.result = 'Upload succeeded (presigned URL)';
+            } else {
+                // fallback to Apex PUT if presigned upload fails
+                const res = await putObjectToS3({ fileName: fileNameToUse, base64Body: this.fileBase64, contentType: this.fileMimeType });
+                this.result = 'Upload via Apex fallback: ' + res;
+            }
         } catch (e) {
             this.error = e?.body?.message || e?.message || JSON.stringify(e);
         } finally {
@@ -114,6 +138,18 @@ export default class S3Tester extends LightningElement {
             this.error = null;
             this.loading = true;
             try {
+                console.log('Fetching file via Apex GET:', row.Key);
+                // Open a blank tab synchronously to avoid popup blockers,
+                // then request a presigned GET URL and navigate the tab to it.
+                const previewWin = window.open('', '_blank');
+                try {
+                    const presignedGet = await getPresignedUrl({ fileName: row.Key, httpMethod: 'GET', expiresInSeconds: 3600 });
+                    console.log('Presigned GET URL:', presignedGet);
+                    if (previewWin) previewWin.location = presignedGet;
+                } catch (preErr) {
+                    console.error('Could not obtain presigned GET URL', preErr);
+                    if (previewWin) previewWin.close();
+                }
                 const content = await getDataFromS3({ fileName: row.Key });
                 // Show preview modal / result block
                 this.result = content;
@@ -129,10 +165,12 @@ export default class S3Tester extends LightningElement {
                     a.remove();
                     URL.revokeObjectURL(url);
                 } catch (dErr) {
+                    console.error('download attempt failed', dErr);
                     // ignore download errors; preview still available
                 }
             } catch (e) {
                 this.error = e?.body?.message || e?.message || JSON.stringify(e);
+                console.error('getDataFromS3 error', e);
             } finally {
                 this.loading = false;
             }

@@ -2,24 +2,37 @@ public with sharing class s3Controller {
     //get data from s3
     @AuraEnabled(cacheable=false)
     public static String getDataFromS3(String fileName) {
+        HttpRequest request = new HttpRequest();
+        request.setMethod('GET');
+        String endpoint = 'callout:aws_s3';
+        if (fileName != null && fileName.trim().length() > 0) {
+            if (!endpoint.endsWith('/')) endpoint += '/';
+            endpoint += EncodingUtil.urlEncode(fileName, 'UTF-8');
+        }
+        request.setEndpoint(endpoint);
+        request.setHeader('Accept', '*/*');
+
+        Http http = new Http();
+        HttpResponse res;
         try {
-            HttpRequest request = new HttpRequest();
-            request.setMethod('GET');
-            String endpoint = 'callout:aws_s3';
-            if (fileName != null && fileName.trim().length() > 0) {
-                if (!endpoint.endsWith('/')) endpoint += '/';
-                endpoint += EncodingUtil.urlEncode(fileName, 'UTF-8');
-            }
-            request.setEndpoint(endpoint);
-            Http http = new Http();
-            HttpResponse res = http.send(request);
-            if (res.getStatusCode() == 200) {
-                return res.getBody();
-            } else {
-                throw new AuraHandledException('Error fetching data from S3: ' + res.getStatusCode() + ' ' + res.getStatus());
-            }
+            res = http.send(request);
         } catch (Exception e) {
-            throw new AuraHandledException('s3Controller.getDataFromS3 error: ' + e.getMessage());
+            String err = 's3Controller.getDataFromS3 exception: ' + e.getMessage() + '\n' + e.getStackTraceString();
+            throw new AuraHandledException(err);
+        }
+
+        if (res == null) {
+            throw new AuraHandledException('s3Controller.getDataFromS3 error: Empty HttpResponse');
+        }
+
+        Integer status = res.getStatusCode();
+        if (status == 200) {
+            return res.getBody();
+        } else {
+            String body = '';
+            try { body = res.getBody(); } catch (Exception e) { body = '<could not read response body>'; }
+            String err = 'Error fetching data from S3: status=' + status + ' statusText=' + res.getStatus() + ' body=' + body;
+            throw new AuraHandledException(err);
         }
     }
     
